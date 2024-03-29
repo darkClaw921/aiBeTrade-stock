@@ -1,8 +1,7 @@
 from telethon import TelegramClient, events
-from chat import GPT
+# from chat import GPT
 from pprint import pprint
-import postgreWork
-from helper import check_pattern_count,convert_text_to_variables
+# from helper import check_pattern_count,convert_text_to_variables
 from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv()
@@ -15,7 +14,7 @@ import os
 api_id =os.getenv('API_ID') 
 api_hash = os.getenv('API_HASH')
 # phone_number = 'YOUR_PHONE_NUMBER'
-gpt=GPT()
+# gpt=GPT()
 # Создайте экземпляр клиента Telegram
 client = TelegramClient('session_name', api_id, api_hash)
 
@@ -26,23 +25,7 @@ client.start()
 # channel_ids = [-1001281274611, -1001747110091,-1001117865178,'SwiftBook','Герасимова и Игорь Новый','-1002010911633',-1002010911633]  # Замените на реальные идентификаторы каналов
 # channel_ids = ['SwiftBook','Герасимова и Игорь Новый','-1002010911633',]  # Замените на реальные идентификаторы каналов
 #см Разработка бота Афиша/ tg источники
-chenalName = [-1001497691183,
-              -1001481640229,
-              -1001322025774,
-            #   -1002010911633,
-              -1001503673245,
-              -1001703113785,
-              -1001361144761,
-              -1001492919625,
-              -1001689586012,
-              -1001180754166,
-              -1001809336275,
-              -1001314963617,
-              -1001633209682,
-              -1001808534933,
-              -1001673441826,
-              -1001626261360,
-              -1002015019095] 
+chenalName = [-1001497691183,] 
 # @client.on(events.NewMessage())
 # @client.on(events.NewMessage(chats=lambda x: x in chenalName))
 @client.on(events.NewMessage(chats=chenalName))
@@ -67,7 +50,7 @@ async def new_message_listener(event):
 
     # if len(text) <= 100: return 0
     #Проверяет меняется ли текст мероприятием
-    if not check_pattern_count(text):
+  # if not check_pattern_count(text):
         # postgreWork.add_new_post(
         # postID=messageID,
         # chatID=chenalID,
@@ -77,7 +60,7 @@ async def new_message_listener(event):
         # # token=allToken,
         # # tokenPrice=allPrice,
         # )
-        return 0
+        # return 0
     
     # 1/0
     chenalID=event.message.chat.id
