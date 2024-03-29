@@ -68,46 +68,48 @@ USERS_THREADS = {}
 #     "Add two integers."
 #     return f"Successfully sent email to {recipient}."
 
-# def find_events(theme: str, location: str, date: str) -> str:
-@tool('conduct_dialogue',return_direct=True)
-def conduct_dialogue(text:str) -> str:
-   """Ведет диалог с пользователем пока он не укажет тему, локацию и дату мероприятия."""
-   return {'text': text}
-
-@tool('add_new_event',return_direct=True)
-def add_new_event(text:str) -> str:
-    """Добавляет новое мероприятие в базу если пользователь является организатором и хочет добавить мероприятие"""
-    # """поиск мероприятий в базе по theme, date. Учитывает последний запрос пользователя."""
-    print(f"Вот что я нашел по вашему запросу: {text}")
-    return {'text': text}
-
-
-@tool('find_events',return_direct=True)
-def find_events(theme: str, location: str=None, date: str=None) -> str:
-    """поиск мероприятий в базе только если пользователь указал тему(theme), локацию(location) и дату(date) в формате который указал пользователь без преобразования"""
-        # """поиск мероприятий в базе по theme, date. Учитывает последний запрос пользователя."""
-    print(f"Вот что я нашел по вашему запросу: {theme} {location} {date}.")
-    return {'theme': theme, 'location': location, 'date': date}
 
 
 
 
-tools = [conduct_dialogue, add_new_event, find_events]
-# modelTools = ChatOpenAI(model="gpt-3.5-turbo-16k", temperature=0).bind_tools(tools)
-modelTools = ChatOpenAI(model="gpt-4-turbo-preview", temperature=0).bind_tools(tools)
+# @tool('conduct_dialogue',return_direct=True)
+# def conduct_dialogue(text:str) -> str:
+#    """Ведет диалог с пользователем пока он не укажет тему, локацию и дату мероприятия."""
+#    return {'text': text}
 
-def call_tool(tool_invocation: dict) -> Runnable:
-    """Function for dynamically constructing the end of the chain based on the model-selected tool."""
-    tool_map = {tool.name: tool for tool in tools}
-    tool = tool_map[tool_invocation["type"]]
-    return RunnablePassthrough.assign(output=itemgetter("args") | tool)
+# @tool('add_new_event',return_direct=True)
+# def add_new_event(text:str) -> str:
+#     """Добавляет новое мероприятие в базу если пользователь является организатором и хочет добавить мероприятие"""
+#     # """поиск мероприятий в базе по theme, date. Учитывает последний запрос пользователя."""
+#     print(f"Вот что я нашел по вашему запросу: {text}")
+#     return {'text': text}
 
-call_tool_list = RunnableLambda(call_tool).map()
-# pprint(call_tool_list)
-# pprint(modelTools)
-# pprint(JsonOutputToolsParser())
 
-chain = modelTools | JsonOutputToolsParser() | call_tool_list
+# @tool('find_events',return_direct=True)
+# def find_events(theme: str, location: str=None, date: str=None) -> str:
+#     """поиск мероприятий в базе только если пользователь указал тему(theme), локацию(location) и дату(date) в формате который указал пользователь без преобразования"""
+#         # """поиск мероприятий в базе по theme, date. Учитывает последний запрос пользователя."""
+#     print(f"Вот что я нашел по вашему запросу: {theme} {location} {date}.")
+#     return {'theme': theme, 'location': location, 'date': date}
+
+# tools = [conduct_dialogue, add_new_event, find_events]
+# # modelTools = ChatOpenAI(model="gpt-3.5-turbo-16k", temperature=0).bind_tools(tools)
+# modelTools = ChatOpenAI(model="gpt-4-turbo-preview", temperature=0).bind_tools(tools)
+
+# def call_tool(tool_invocation: dict) -> Runnable:
+#     """Function for dynamically constructing the end of the chain based on the model-selected tool."""
+#     tool_map = {tool.name: tool for tool in tools}
+#     tool = tool_map[tool_invocation["type"]]
+#     return RunnablePassthrough.assign(output=itemgetter("args") | tool)
+
+# call_tool_list = RunnableLambda(call_tool).map()
+# chain = modelTools | JsonOutputToolsParser() | call_tool_list
+
+
+
+
+
+
 # a = chain.invoke("сколько электронных писем я получил за последние 5 дней?")
 # a = chain.invoke("отправь писмо на адрес datkclaw@yandex.ru")
 # a = chain.invoke("Send sally@gmail.com an email saying 'What's up homie")
@@ -117,7 +119,7 @@ chain = modelTools | JsonOutputToolsParser() | call_tool_list
 # Клиент: Бали
 # Ассистент: какая тема мероприятия вас интересует?
 # Клиент: танцы"""
-history="""Клиент: привет, я хочу узнать о мероприятии на завтра по танцам в убуд"""
+# history="""Клиент: привет, я хочу узнать о мероприятии на завтра по танцам в убуд"""
 # a=chain.invoke(
 #     [
 #         HumanMessage(
@@ -128,11 +130,11 @@ history="""Клиент: привет, я хочу узнать о меропр�
 #         AIMessage(content="какая тема мероприятия вас интересует?"),
 #         HumanMessage(content="танцы"),
 #     ]
+# # )
+# a=chain.invoke(
+#   history
 # )
-a=chain.invoke(
-  history
-)
-print(a)
+# print(a)
 
 # 1/0
 class GPT():
