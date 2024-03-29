@@ -1,12 +1,12 @@
-from langchain.llms import OpenAI
+from langchain_community.llms import OpenAI
 from langchain.docstore.document import Document
 import requests
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain.text_splitter import CharacterTextSplitter
 from operator import itemgetter
 
-import ipywidgets as widgets
+# import ipywidgets as widgets
 
 import re
 from dotenv import load_dotenv
@@ -14,12 +14,12 @@ load_dotenv()
 from openai import OpenAI
 import os
 
-import tiktoken
+# import tiktoken
 import sys
 from loguru import logger
 from pprint import pprint
 from langchain_core.tools import tool
-from langchain_openai import ChatOpenAI
+# from langchain_openai import ChatOpenAI
 from langchain.output_parsers import JsonOutputToolsParser
 from langchain_core.runnables import Runnable, RunnableLambda, RunnablePassthrough
 from langchain_core.messages import HumanMessage, AIMessage
