@@ -50,8 +50,8 @@ async def new_message_listener(event):
     
     # promt=promt.replace('[dateNow]',dateNow)
     answer, allToken, allPrice = gpt.answer(promt,messagesList,1,'gpt-3.5-turbo-16k')
-    await client.send_message(327475194, message=answer,reply_to=event.message)
-    await client.send_message(327475194, message=f"Всего токенов потрачено:{allToken}\nЦена: {allPrice}",reply_to=event.message)
+    await client.send_message(327475194, message=answer)
+    await client.send_message(327475194, message=f"Всего токенов потрачено:{allToken}\nЦена: {allPrice}")
 
     #chenalID записывается без -100 в начале -1002010911633
 
