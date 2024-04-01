@@ -18,7 +18,8 @@ api_hash = os.getenv('API_HASH')
 # phone_number = 'YOUR_PHONE_NUMBER'
 gpt=GPT()
 # Создайте экземпляр клиента Telegram
-client = TelegramClient('session_name', api_id, api_hash)
+client = TelegramClient('session_name', api_id, api_hash,system_version="4.16.30-vxCUSTOM", device_model='Samsung Galaxy S24 Ultra, running Android 14')
+
 
 # Авторизуйтесь в клиенте
 client.start()
