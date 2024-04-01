@@ -30,7 +30,8 @@ client.start()
 chenalName = [-1001442825795,400923372] 
 # @client.on(events.NewMessage())
 # @client.on(events.NewMessage(chats=lambda x: x in chenalName))
-@client.on(events.NewMessage(chats=chenalName))
+#@client.on(events.NewMessage(chats=chenalName))
+@client.on(events.NewMessage())
 async def new_message_listener(event):
     # Обработка новых сообщений
     
@@ -49,12 +50,12 @@ async def new_message_listener(event):
     promt=gpt.load_prompt(url)
     
     # dateNow = datetime.now().strftime("%d.%m.%Y %A")
-    
+    time.sleep(random.randint(5, 20))
     # promt=promt.replace('[dateNow]',dateNow)
     answer, allToken, allPrice = gpt.answer(promt,messagesList,1)
-    await client.send_message(327475194, message=answer)
-    time.sleep(random.randint(5, 20))
-    await client.send_message(327475194, message=f"Всего токенов потрачено:{allToken}\nЦена: {allPrice}")
+    await client.send_message(6984701819, message=answer)
+    
+    # await client.send_message(6984701819, message=f"Всего токенов потрачено:{allToken}\nЦена: {allPrice}")
 
     #chenalID записывается без -100 в начале -1002010911633
 
