@@ -57,10 +57,12 @@ async def new_message_listener(event):
     # dateNow = datetime.now().strftime("%d.%m.%Y %A")
     time.sleep(random.randint(5, 20))
     # promt=promt.replace('[dateNow]',dateNow)
-    answer, allToken, allPrice = gpt.answer(promt,messagesList,1)
+    
     if text.find('#gpt') != -1:
+        answer, allToken, allPrice = gpt.answer('',messagesList,1)
         await event.reply(answer)  
     else:
+        answer, allToken, allPrice = gpt.answer(promt,messagesList,1)
         await client.send_message(6984701819, message=answer)
 
     # await client.send_message(6984701819, message=f"Всего токенов потрачено:{allToken}\nЦена: {allPrice}")
