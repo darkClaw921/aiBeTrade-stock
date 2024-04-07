@@ -18,7 +18,7 @@ api_hash = os.getenv('API_HASH')
 # phone_number = 'YOUR_PHONE_NUMBER'
 gpt=GPT()
 # Создайте экземпляр клиента Telegram
-client = TelegramClient('session_name', api_id, api_hash,system_version="4.16.30-vxCUSTOM", device_model='Samsung Galaxy S24 Ultra, running Android 14')
+client = TelegramClient('session_name', api_id, api_hash, system_version="4.16.30-vxCUSTOM", device_model='Samsung Galaxy S24 Ultra, running Android 14')
 
 
 # Авторизуйтесь в клиенте
@@ -39,8 +39,12 @@ async def new_message_listener(event):
     text=event.message.text
     print(text)
     
+    if text.find('#gpt') != -1:
+        1+0
+        #await event.reply('Some text') 
+        # отправляем в gpt
     
-    if text.find('push') == -1:
+    elif text.find('push') == -1:
         return 0
     
     
@@ -54,8 +58,11 @@ async def new_message_listener(event):
     time.sleep(random.randint(5, 20))
     # promt=promt.replace('[dateNow]',dateNow)
     answer, allToken, allPrice = gpt.answer(promt,messagesList,1)
-    await client.send_message(6984701819, message=answer)
-    
+    if text.find('#gpt') != -1:
+        await event.reply(answer)  
+    else:
+        await client.send_message(6984701819, message=answer)
+
     # await client.send_message(6984701819, message=f"Всего токенов потрачено:{allToken}\nЦена: {allPrice}")
 
     #chenalID записывается без -100 в начале -1002010911633
