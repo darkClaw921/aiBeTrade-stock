@@ -65,9 +65,13 @@ async def new_message_listener(event):
         #     url = gpt.create_image(promt=text)
         #     client.send_file(event.chat.id, url)
         #     return 0
-        if event.message.photo:
+        pprint(event.__dict__)
+        pprint(event.message.__dict__)
+        if event.media:
+            pprint(event.__dict__)
+            pprint(event.message.__dict__)
         # Получаем информацию о самом большом изображении
-            photo = event.message.photo[-1]
+            photo = event. message.photo[-1]
             photoURL=photo.file_ref 
             textPhoto=event.message.text
             pprint(photoURL)
