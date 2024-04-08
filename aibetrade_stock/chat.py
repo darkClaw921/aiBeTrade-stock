@@ -175,6 +175,17 @@ class GPT():
     text = response.text
     return f'{text}'
 
+  def create_image(self, promt:str) -> str:
+    # PROMPT = "An eco-friendly computer from the 90s in the style of vaporwave"
+
+
+    response = client.images.generate(prompt=promt,
+    n=1,
+    size="256x256")
+
+    # print(response["data"][0]["url"])
+    return response.data[0].url
+  
 
   def create_embedding(self, data):
     def num_tokens_from_string(string: str, encoding_name: str) -> int:
@@ -438,7 +449,31 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
     return f'{answer}', totalToken, 0.002*(totalToken/1000), docs
 
 #    return answer
-  
+  def vision_answer(self, promt:str, photoURL:str):
+    response = client.chat.completions.create(
+      model="gpt-4-vision-preview",
+      messages=[
+              {
+                  "role": "user",
+                  "content": [
+                      {"type": "text", "text": promt},
+                      {
+                          "type": "image_url",
+                          "image_url": photoURL,
+                      },
+                  ],
+              }
+          ],
+          # max_tokens=300,
+    )
+
+    print(response.choices[0])
+    return response.choices[0].message.content
+     
+     
+     
+     
+      
   def get_summary(self, history:list, 
                   promtMessage = 'Write a concise summary of the following and CONCISE SUMMARY IN RUSSIAN:',
                   temp = 0.3):    

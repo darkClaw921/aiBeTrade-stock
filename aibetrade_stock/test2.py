@@ -59,8 +59,31 @@ async def new_message_listener(event):
     # promt=promt.replace('[dateNow]',dateNow)
     
     if text.find('#gpt') != -1:
-        answer, allToken, allPrice = gpt.answer('',messagesList,1)
-        await event.reply(answer)  
+        # if text.startswith('/image'):
+        #     text = text.replace('/image ', '').replace('#gpt','')
+
+        #     url = gpt.create_image(promt=text)
+        #     client.send_file(event.chat.id, url)
+        #     return 0
+        if event.message.photo:
+        # Получаем информацию о самом большом изображении
+            photo = event.message.photo[-1]
+            photoURL=photo.file_ref 
+            textPhoto=event.message.text
+            pprint(photoURL)
+            # Получаем файл изображения
+            # file = await client.download_media(photo)
+            
+            # Отправляем изображение на распознавание с помощью OpenAI
+            # with open(file, 'rb') as f:
+            #     image_data = f.read()     
+            
+            answer = gpt.vision_answer(textPhoto,photoURL)
+            await event.reply(answer)
+
+        else:
+            answer, allToken, allPrice = gpt.answer('',messagesList,1)
+            await event.reply(answer)  
     else:
         answer, allToken, allPrice = gpt.answer(promt,messagesList,1)
         await client.send_message(6984701819, message=answer)
