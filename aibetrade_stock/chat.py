@@ -449,7 +449,7 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
     return f'{answer}', totalToken, 0.002*(totalToken/1000), docs
 
 #    return answer
-  def vision_answer(self, promt:str, photoURL:str):
+  def vision_answer(self, promt:str, base64_image:str):
     response = client.chat.completions.create(
       model="gpt-4-vision-preview",
       messages=[
@@ -459,7 +459,9 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
                       {"type": "text", "text": promt},
                       {
                           "type": "image_url",
-                          "image_url": photoURL,
+                          "image_url": {
+                             'url': f"data:image/jpeg;base64,{base64_image}"
+                          },
                       },
                   ],
               }

@@ -8,6 +8,7 @@ import time
 import random
 load_dotenv()
 import os
+import base64
 
 
 # Вставьте ваши данные для подключения к Telegram API
@@ -32,10 +33,14 @@ chenalName = [-1001442825795,400923372]
 # @client.on(events.NewMessage())
 # @client.on(events.NewMessage(chats=lambda x: x in chenalName))
 #@client.on(events.NewMessage(chats=chenalName))
+def encode_image(image_path):
+  with open(image_path, "rb") as image_file:
+    return base64.b64encode(image_file.read()).decode('utf-8')
+  
 @client.on(events.NewMessage())
 async def new_message_listener(event):
     # Обработка новых сообщений
-    
+    userID=event.message.sender_id
     text=event.message.text
     print(text)
     
@@ -74,9 +79,12 @@ async def new_message_listener(event):
         # Получаем информацию о самом большом изображении
             photo = event.message.media.photo
             pprint(photo.__dict__)
-            photoURL=photo.file_ref 
-            textPhoto=event.message.text
-            pprint(photoURL)
+            path=f'{userID}.jpg'
+            client.download_media(event, file=path)
+            
+            base64_image = encode_image(path)
+
+          
             # Получаем файл изображения
             # file = await client.download_media(photo)
             
@@ -84,8 +92,9 @@ async def new_message_listener(event):
             # with open(file, 'rb') as f:
             #     image_data = f.read()     
             
-            answer = gpt.vision_answer(textPhoto,photoURL)
+            answer = gpt.vision_answer(text,base64_image)
             await event.reply(answer)
+            os.remove(path)
 
         else:
             answer, allToken, allPrice = gpt.answer('',messagesList,1)
