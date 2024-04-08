@@ -80,7 +80,7 @@ async def new_message_listener(event):
             photo = event.message.media.photo
             pprint(photo.__dict__)
             path=f'{userID}.jpg'
-            client.download_media(event, file=path)
+            await client.download_media(event, file=path)
             
             base64_image = encode_image(path)
 
