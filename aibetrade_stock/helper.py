@@ -215,46 +215,48 @@ def forecastText(day:int, coin='Bitcoin'):
                 {'role': 'user', 'content': f""}]
         #print(promt)
         answer5, allToken5, allTokenPrice5= gpt.answer(' ',mess,) 
-        prognozPrice, lowerPrice, upperPrice = prepare_prognoz(answer5)
+        # prognozPrice, lowerPrice, upperPrice = prepare_prognoz(answer5)
         
         allTokenPrice += allTokenPrice5
         allToken += allToken5
         
 
         # dateForDatePrognoz = get_dates(1,'%Y-%m-%dT%H:00:00')[1]+'Z'
-        dateForDatePrognoz = datetime.now() + timedelta(days=1)
+        # dateForDatePrognoz = datetime.now() + timedelta(days=1)
         #price_for_date_prognoz = get_price_now()
-        row = {
-            'time_epoh':time_epoch(),
-            'date':dateNow,
-            'textPrognoz': answer,
-            'coin':coin,
-            'stock': 'Binance',
-            'allToken':allToken,
-            'allTokenPrice':allTokenPrice,
-            'textPricePrognoz': answer5,
-            'lowerPrice':lowerPrice,
-            'upperPrice':upperPrice,
-            'pricePrognoz':prognozPrice,
-            'dateForDatePrognoz':dateForDatePrognoz,
-            'priceNow':priceNow,
-        }
-        # logger.debug(row=row)
-        # sql.insert_query('prognoz_text', row)
-        # postgreWork.add_new_row_prognoz_text(row)
+        # row = {
+        #     'time_epoh':time_epoch(),
+        #     'date':dateNow,
+        #     'textPrognoz': answer,
+        #     'coin':coin,
+        #     'stock': 'Binance',
+        #     'allToken':allToken,
+        #     'allTokenPrice':allTokenPrice,
+        #     'textPricePrognoz': answer5,
+        #     'lowerPrice':lowerPrice,
+        #     'upperPrice':upperPrice,
+        #     'pricePrognoz':prognozPrice,
+        #     'dateForDatePrognoz':dateForDatePrognoz,
+        #     'priceNow':priceNow,
+        # }
+        # # logger.debug(row=row)
+        # # sql.insert_query('prognoz_text', row)
+        # # postgreWork.add_new_row_prognoz_text(row)
 
-        row = {
-            'time_epoh':time_epoch(), 
-            'currencyPair':coins[coin],
-            'priceClose':prognozPrice,
-            'dateClose':dateForDatePrognoz,
-            'type': 'prognoz',
-            'strat':'GPT24',
-        }
+        # row = {
+        #     'time_epoh':time_epoch(), 
+        #     'currencyPair':coins[coin],
+        #     'priceClose':prognozPrice,
+        #     'dateClose':dateForDatePrognoz,
+        #     'type': 'prognoz',
+        #     'strat':'GPT24',
+        # }
         # sql.insert_query('analitic', row)
         # postgreWork.add_new_row_analitic(row)
 
         # print(answer)
+        send_message(2118909508,answer,1)
+        send_message(2118909508,answer5,1)
         return answer
     except Exception as e:
         print(e.__traceback__)
@@ -268,7 +270,7 @@ if __name__ == '__main__':
 
     a=forecastText(0) 
     print(a)
-    send_message(2118909508,a,1)
+    # send_message(2118909508,a,1)
     # print(a)
     
    

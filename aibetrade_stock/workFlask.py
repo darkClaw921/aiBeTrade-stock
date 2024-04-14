@@ -26,7 +26,7 @@ client.start()
 def split_text(text, max_length):
     """
     Split the text into chunks of maximum length.
-
+    
     Args:
         text (str): The text to split.
         max_length (int): The maximum length of each chunk.
