@@ -101,6 +101,8 @@ def prepare_prognoz(text):
     # print(text)
     pattern = r"\d+\.\d+"
     matches = re.findall(pattern, text)
+    lowerPrice = 0
+    upperPrice = 0
     if len(matches)==3:
         prognozPrice = matches[0]
         lowerPrice = matches[1]
