@@ -255,8 +255,8 @@ def forecastText(day:int, coin='Bitcoin'):
         # postgreWork.add_new_row_analitic(row)
 
         # print(answer)
-        send_message(2118909508,answer,1)
-        send_message(2118909508,answer5,1)
+        send_message(-1002118909508,answer,1)
+        send_message(-1002118909508,answer5,1)
         return answer
     except Exception as e:
         print(e.__traceback__)
@@ -267,6 +267,7 @@ def forecastText(day:int, coin='Bitcoin'):
 
 if __name__ == '__main__':
 
+    # send_message(-1002118909508,'test',1)
 
     a=forecastText(0) 
     print(a)

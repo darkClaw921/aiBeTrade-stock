@@ -88,6 +88,6 @@ def webhook():
 
 
 if __name__ == '__main__':
-    
-    send_message(2118909508, 'Cамо сообщение', 33 )
+    pass
+    # send_message(2118909508, 'Cамо сообщение', 33 )
     # app.run(host='0.0.0.0', port='5002', debug=False)
