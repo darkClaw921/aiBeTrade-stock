@@ -265,7 +265,7 @@ if __name__ == '__main__':
 
 
     a=forecastText(0) 
-    send_message(2118909508,a)
+    send_message(2118909508,a,1)
     # print(a)
     
    
