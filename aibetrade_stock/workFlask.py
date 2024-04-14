@@ -18,7 +18,7 @@ API_HASH = os.getenv('API_HASH')
 app = Flask(__name__)
 
 # Создаем Telegram клиент
-client = TelegramClient('session_name', API_ID, API_HASH, system_version="4.16.32-vxCUSTOM", device_model='Flask Galaxy S24 Ultra, running Android 14')
+client = TelegramClient('session_name2', API_ID, API_HASH, system_version="4.16.32-vxCUSTOM", device_model='Flask Galaxy S24 Ultra, running Android 14')
 # client = TelegramClient('session_name_flask', API_ID, API_HASH, system_version="4.16.32-vxCUSTOM", device_model='Flask Galaxy S24 Ultra, running Android 14')
 client.start()
 # client.suo
