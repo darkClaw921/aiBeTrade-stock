@@ -15,6 +15,7 @@ loguru = "^0.7.2"
 flask = "^3.0.3"
 redis = "^5.0.3"
 binance = "^0.3"
+python-binance = "^1.0.19"
 
 
 [build-system]

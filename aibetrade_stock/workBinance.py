@@ -1,4 +1,6 @@
 from binance import Client
+from binance import *
+# from binance
 from pprint import pprint
 from dotenv import load_dotenv
 import os 
