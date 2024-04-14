@@ -1,4 +1,4 @@
-from binance import Client, ThreadedWebsocketManager, ThreadedDepthCacheManager
+from binance import Client
 from pprint import pprint
 from dotenv import load_dotenv
 import os 
@@ -7,9 +7,10 @@ from datetime import datetime
 from typing import List
 
 load_dotenv()
-api_key = os.environ.get('api_key_binance')
-api_secret = os.environ.get('api_secret_binance')
-
+api_key = os.getenv('api_key_binance')
+api_secret = os.getenv('api_secret_binance')
+# print(api_key)
+# print(api_secret)
 client = Client(api_key, api_secret)
 
 coins = {'Bitcoin':'BTCUSDT', 

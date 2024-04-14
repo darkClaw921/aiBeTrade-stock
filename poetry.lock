@@ -160,6 +160,16 @@ tests-mypy = ["mypy (>=1.6)", "pytest-mypy-plugins"]
 tests-no-zope = ["attrs[tests-mypy]", "cloudpickle", "hypothesis", "pympler", "pytest (>=4.3.0)", "pytest-xdist[psutil]"]
 
 [[package]]
+name = "binance"
+version = "0.3"
+description = "Binance API wrapper"
+optional = false
+python-versions = "*"
+files = [
+    {file = "binance-0.3-py2.py3-none-any.whl", hash = "sha256:9bdcfac96a5c2713f8a018d9f19a21317bf25ab5f9e12a542d8a6f08f73189c9"},
+]
+
+[[package]]
 name = "blinker"
 version = "1.7.0"
 description = "Fast, simple object-to-object and broadcast signaling"
@@ -1308,6 +1318,21 @@ files = [
 ]
 
 [[package]]
+name = "redis"
+version = "5.0.3"
+description = "Python client for Redis database and key-value store"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "redis-5.0.3-py3-none-any.whl", hash = "sha256:5da9b8fe9e1254293756c16c008e8620b3d15fcc6dde6babde9541850e72a32d"},
+    {file = "redis-5.0.3.tar.gz", hash = "sha256:4973bae7444c0fbed64a06b87446f79361cb7e4ec1538c022d696ed7a5015580"},
+]
+
+[package.extras]
+hiredis = ["hiredis (>=1.0.0)"]
+ocsp = ["cryptography (>=36.0.1)", "pyopenssl (==20.0.1)", "requests (>=2.26.0)"]
+
+[[package]]
 name = "requests"
 version = "2.31.0"
 description = "Python HTTP for Humans."
@@ -1671,4 +1696,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "afcc2717f13c7674182b671ec2a54fdbc1387d59cc9bea6b82d8f44a12f5dc5e"
+content-hash = "f8bf96158e803e3953ecf1050ae42a1bae3251a6d10129a04c279cbbb0e2f183"
