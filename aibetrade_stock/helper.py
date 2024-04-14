@@ -255,7 +255,7 @@ def forecastText(day:int, coin='Bitcoin'):
         # print(answer)
         return answer
     except Exception as e:
-        print(e)
+        print(e.__traceback__)
         pprint(e)
         # logger.debug(f'{e=}')
 
@@ -265,6 +265,7 @@ if __name__ == '__main__':
 
 
     a=forecastText(0) 
+    print(a)
     send_message(2118909508,a,1)
     # print(a)
     
