@@ -159,7 +159,7 @@ def forecastText(day:int, coin='Bitcoin'):
         #time.sleep(random_time)
         #answer, allToken, allTokenPrice= gpt.answer(' ',mess,)
         
-        primt1URL = 'https://docs.google.com/document/d/1m7jLkuAfBNjCo2tELxqA7wpPeoVZv7uuO4h42Z1XDGs/edit?usp=sharing'
+        primt1URL = 'https://docs.google.com/document/d/1kvtS8FDYQ7Mg0QTuIYLUzfzPzIwNtNAy8nVHTDcmH1A/edit?usp=sharing'
         promt = gpt.load_prompt(primt1URL)
         promt = promt.replace('[analitict]', analitBTC)
         promt = promt.replace('[nextDate]', str(day))
@@ -172,7 +172,7 @@ def forecastText(day:int, coin='Bitcoin'):
         
         random_time = random.randint(5, 30)
         #time.sleep(random_time)
-        primt2URL= 'https://docs.google.com/document/d/15rHWSAZCZkashtPHPgyoAhtPjTU71volGRHTiJ8CHK0/edit?usp=sharing'
+        primt2URL= 'https://docs.google.com/document/d/15nj87WI9Ud3EGgmp0JM0AZdQVQGPgN3ly-zjWCEUsB0/edit?usp=sharing'
         promt = gpt.load_prompt(primt2URL)
         promt = promt.replace('[analitict]', analitBTC)
         promt = promt.replace('[nextDate]', str(day))
@@ -184,7 +184,7 @@ def forecastText(day:int, coin='Bitcoin'):
         answer2, allToken2, allTokenPrice2= gpt.answer(' ',mess,)
         
 
-        primt3URL= 'https://docs.google.com/document/d/1wagRJN44EGT8ZPqdikjBSf0VlaAbPcvCWKfrrmk_F-c/edit?usp=sharing'
+        primt3URL= 'https://docs.google.com/document/d/17hsm51kQGnhXgU7LkFkCGxsIBY82FPefowN8GcGIa6U/edit?usp=sharing'
         promt = gpt.load_prompt(primt3URL)
         mess = [{'role': 'system', 'content': promt,},
                 {'role': 'user', 'content': f"{answer1}\n{answer2}"}]
@@ -192,7 +192,7 @@ def forecastText(day:int, coin='Bitcoin'):
         
         random_time = random.randint(5, 30)
         #time.sleep(random_time)
-        primt4URL= 'https://docs.google.com/document/d/1P7JbW_oR-yOfGH32MtUdYb_w02UBLerdicz67FrxjaM/edit?usp=sharing'
+        primt4URL= 'https://docs.google.com/document/d/1cqDETdeSLj2vX8nBzWFbNV4jAl61oz_nGwL16EM-ZIM/edit?usp=sharing'
         promt = gpt.load_prompt(primt4URL)
         promt = promt.replace('[language]', 'Russian')
 
@@ -204,7 +204,7 @@ def forecastText(day:int, coin='Bitcoin'):
         allToken = allToken1+allToken2+allToken3+allToken4
         allTokenPrice = allTokenPrice1+allTokenPrice2+allTokenPrice3+allTokenPrice4
 
-        promt5URL = 'https://docs.google.com/document/d/1BCl6okPS0KW0Z3-YHaGZO-eJJmDqPUzF7jKH_CmsrCk/edit?usp=sharing'
+        promt5URL = 'https://docs.google.com/document/d/1TPTa7s_VsbjMdaHw0k0EQrHecSnp8X5T-JoaOoGh53M/edit?usp=sharing'
         promt = gpt.load_prompt(promt5URL)
         promt = promt.replace('[analitict]', analitBTC)
         promt = promt.replace('[coin]', coin)
@@ -255,7 +255,10 @@ def forecastText(day:int, coin='Bitcoin'):
         # postgreWork.add_new_row_analitic(row)
 
         # print(answer)
-        send_message(-1002118909508,answer,1)
+        
+        #ббольшой текст
+        # send_message(-1002118909508,answer,1)
+
         send_message(-1002118909508,answer5,1)
         return answer
     except Exception as e:
