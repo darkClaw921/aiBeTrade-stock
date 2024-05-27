@@ -293,8 +293,9 @@ class GPT():
     return answerText, totalToken, tokenPrice
   
 
-  #def answer(self, system, topic, temp = 1):    
-  def answer(self, system, topic:list, temp = 1, modelVersion='gpt-4-turbo-preview'):
+  # #def answer(self, system, topic, temp = 1):    
+  # def answer(self, system, topic:list, temp = 1, modelVersion='gpt-4-turbo-preview'):
+  def answer(self, system, topic:list, temp = 1, modelVersion='gpt-4o'):
     """messages = [
       {"role": "system", "content": system},
       {"role": "user", "content": topic}
