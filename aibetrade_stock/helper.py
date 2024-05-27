@@ -259,7 +259,9 @@ def forecastText(day:int, coin='Bitcoin'):
         #ббольшой текст
         # send_message(-1002118909508,answer,1)
 
-        send_message(-1002118909508,answer5,1)
+        # send_message(-1002118909508,answer5,1)
+        send_message(-1002247551722,answer5,1)
+        # send_message(-1002247551722, message=answer)
         return answer
     except Exception as e:
         print(e.__traceback__)

@@ -107,7 +107,7 @@ async def new_message_listener(event):
     else:
         answer, allToken, allPrice = gpt.answer(promt,messagesList,1)
         await client.send_message(6984701819, message=answer)
-        await client.send_message(2247551722, message=answer)
+        
 
     # await client.send_message(6984701819, message=f"Всего токенов потрачено:{allToken}\nЦена: {allPrice}")
 
