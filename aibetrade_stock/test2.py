@@ -10,7 +10,7 @@ load_dotenv()
 import os
 import base64
 import postgreWork
-
+from telethon.tl.types import PeerUser, PeerChat, PeerChannel
 
 # Вставьте ваши данные для подключения к Telegram API
 # api_id = 'YOUR_API_ID'
@@ -84,7 +84,7 @@ async def new_message_listener(event):
         try:
             user_entity = await client.get_entity(int(userID))
         except:
-            user_entity = await client.get_input_entity(int(userID))
+            user_entity    = await client.get_entity(PeerUser(userID))
         username=''
         if user_entity.username:
             username=user_entity.username
@@ -94,7 +94,11 @@ async def new_message_listener(event):
 
         if postgreWork.check_group(chatID)==False:
             chat= await client.get_entity(chatID)
-            postgreWork.add_new_group(chatID, chat.title)
+            try:
+                chat_title=chat.title
+            except:
+                chat_title='no title'   
+            postgreWork.add_new_group(chatID, chat_title)
 
         postgreWork.add_new_message(message_id, chatID, userID, text, typeChat,'')
         
