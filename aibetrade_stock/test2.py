@@ -80,8 +80,15 @@ async def new_message_listener(event):
     if postgreWork.check_user(userID):
         postgreWork.add_new_message(message_id, chatID, userID, text, typeChat,'')
     else:
-        sender= await client.get_peer_id(userID)
-        postgreWork.add_new_user(userID,sender.username, chatID)
+        # sender= await client.get_peer_id(userID)
+        user_entity = await client.get_entity(int(userID))
+        username=''
+        if user_entity.username:
+            username=user_entity.username
+        else:
+            username='no username'
+            
+        postgreWork.add_new_user(userID,username, chatID)
         postgreWork.add_new_message(message_id, chatID, userID, text, typeChat,'')
 
 
