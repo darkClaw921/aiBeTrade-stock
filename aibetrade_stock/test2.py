@@ -101,14 +101,16 @@ async def new_message_listener(event):
             dialogs = await client.get_dialogs()
             user_entity = await client.get_input_entity(PeerUser(userID))
             user_entity = await client.get_entity(PeerUser(userID))
+            username=''
+            if user_entity.username:
+                username=user_entity.username
+            else:
+                username='no username'
         except:
-            user_entity = await client.get_entity(int(userID))
-
-        username=''
-        if user_entity.username:
-            username=user_entity.username
-        else:
+            # user_entity = await client.get_entity(int(userID))
             username='no username'
+
+      
         postgreWork.add_new_user(userID,username, chatID)
 
         if postgreWork.check_group(chatID)==False:

@@ -76,11 +76,12 @@ class Message(Base):
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     created_date = Column(DateTime)
     group_id = Column(BigInteger, ForeignKey('Group.id'))
-    user_id = Column(BigInteger, ForeignKey('User.id'))
-    text = Column(String)
+    user_id = Column(BigInteger, ForeignKey('User.id'))    
     message_id = Column(BigInteger)
     payload = Column(String)
     type_chat = Column(String)
+    text = Column(String)
+
 
 Base.metadata.create_all(engine)
 
