@@ -44,9 +44,9 @@ async def new_message_listener(event):
     text=event.message.text
     # pprint(event.__dict__)
     
-    # pprint(event.message.__dict__)
+    pprint(event.message.__dict__)
     # pprint(event.__dict__['_input_chat'].__dict__)
-    # pprint(event.chat.__dict__)
+    pprint(event.chat.__dict__)
     print(text) 
     
     if text.find('#gpt') != -1:

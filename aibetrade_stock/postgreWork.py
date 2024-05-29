@@ -2,9 +2,9 @@ from sqlalchemy import (create_engine, Column,
                         Integer, Float, String,
                         DateTime, JSON, ARRAY, 
                         BigInteger, func, text, 
-                        BOOLEAN, URL)
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker,relationship
+                        BOOLEAN, URL, ForeignKey)
+# from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker,relationship, declarative_base
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
@@ -35,7 +35,7 @@ Base = declarative_base()
 
 
 class User(Base):
-    # __tablename__ = 'user'
+    __tablename__ = 'User'
     
     id = Column(BigInteger, primary_key=True)
     created_date = Column(DateTime)
@@ -44,68 +44,44 @@ class User(Base):
     all_token=Column(Float)
     all_token_price=Column(Float)
     payload=Column(String)
-    
+    groups = Column(ARRAY(BigInteger), default=[])
     # isAdmin=Column(BOOLEAN, default=False)
     # groupsAdmin=relationship('Group', back_populates='admins')
-    
+    def add_group(self, groupID:int):
+        if groupID not in self.groups:
+            self.groups.append(groupID)
+            
 
 
 class Group(Base):
+    __tablename__ = 'Group'
     id = Column(BigInteger, primary_key=True) 
     name=Column(String)
     telegram_group_link = Column(String, nullable=False)
+    create_date = Column(DateTime)
     # admins=relationship('User', back_populates='groupsAdmin')
-    admins=Column(ARRAY(User))
-
-    def __init__(self, name, email, nickname):
+    # admins=Column(ARRAY(User))
+    admins = Column(ARRAY(BigInteger), default=[])
+    active=Column(BOOLEAN, default=True)
+    def __init__(self, id,name ):
         self.id = id
         self.name = name
         # self.nickname = nickname
         self.telegram_group_link = f"https://t.me/{name}"
     
+    def add_admin(self, adminID:int):
+        if adminID not in self.admins:
+            self.admins.append(adminID) 
 
-class Post(Base):
-    __tablename__ = 'post'
-
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
+class Message(Base):
+    __tablename__ = 'Message'
+    id = Column(BigInteger, primary_key=True)
     created_date = Column(DateTime)
-
-    date=Column(DateTime)
-    time=Column(String)
-    organizer=Column(String)
-    language=Column(String)
-    event=Column(Integer)
-    price=Column(Float)
-
-    post_id=Column(BigInteger)
-    chat_id=Column(BigInteger)
-    sender_nickname=Column(String)
-    text=Column(String)
-    date=Column(DateTime)
-    location=Column(ARRAY(String))
-    theme=Column(String)
-    targets=Column(ARRAY(String)) 
-    token=Column(Float)
-    token_price=Column(Float)
-    payload=Column(String) 
-    location_str=Column(String)
-    
-    
-
-class Statistick(Base):
-    __tablename__ = 'statistick'
-
-    id=Column(BigInteger, primary_key=True, autoincrement=True)
-    created_date=Column(DateTime)
-    nickname=Column(String)
-    query_text=Column(String)
-    theme=Column(String)
-    query_array=Column(ARRAY(String))
-    targets=Column(ARRAY(String))
-    
-    text=Column(String)
-    token=Column(Float)
-    token_price=Column(Float)
+    group_id = Column(BigInteger, ForeignKey('Group.id'))
+    user_id = Column(BigInteger, ForeignKey('User.id'))
+    text = Column(String)
+    message_id = Column(BigInteger)
+    payload = Column(String)
 
 Base.metadata.create_all(engine)
 
@@ -113,88 +89,43 @@ Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-def add_new_user(userID:int, nickname:str):
+def add_new_user(userID:int, nickname:str, gropupID:int):
     with Session() as session:
         newUser=User(
+            created_date=datetime.now(),
             id=userID,
             nickname=nickname,
-            created_date=datetime.now(),
+            all_token=0,
+            all_token_price=0,
+         
         )
+        newUser.add_group(gropupID)
         session.add(newUser)
         session.commit()
 
-def add_new_post(postID:int, chatID:int, 
-                 text:str,
-                senderNickname:str=None, 
-                date:datetime=None, 
-                location:list[str]=None, 
-                theme:str=None, 
-                targets:list[str]=None, 
-                token:float=None, 
-                tokenPrice:float=None, 
-                payload:str=None,
-                time:str=None,
-                organizer:str=None,
-                language:str=None,
-                event:int=None,
-                price:float=None,
-                location_str:str=None,
-                
-                ):
+def add_new_group(groupID:int, name:str,):
     with Session() as session:
-        newPost=Post(
-            time=time,
-            organizer=organizer,
-            language=language,
-            event=event,
-            price=price,
+        newGroup=Group(
+            id=groupID,
+            name=name,
+            create_date=datetime.now(),
+            # telegram_group_link=telegram_group_link,
+        )
+        session.add(newGroup)
+        session.commit()
 
+def add_new_message(messageID:int, chatID:int, userID:int, text:str, payload:str):
+    with Session() as session:
+        newMessage=Message(
+            id=messageID,
             created_date=datetime.now(),
-            post_id=postID,
             chat_id=chatID,
+            user_id=userID,
             text=text,
-            date=date,
-            location=location,
-            theme=theme,
-            targets=targets,
-            token=token,
-            token_price=tokenPrice,
-            payload=payload,
-            sender_nickname=senderNickname,
-            location_str=location_str,
+            payload=payload
         )
-        session.add(newPost)
+        session.add(newMessage)
         session.commit()
-
-def add_statistick(userName:str, queryText:str, 
-                   theme:str, 
-                   token:float,
-                   tokenPrice:float,
-                   text:str,
-                   queryArray:list[str]=[], 
-                   targets:list[str]=[],):
-    
-    with Session() as session:
-        newStatistick=Statistick(
-            created_date=datetime.now(),
-            nickname=userName,
-            query_text=queryText,
-            theme=theme,
-            query_array=queryArray,
-            targets=targets,
-            token=token,
-            token_price=tokenPrice,
-            text=text,
-        )
-        session.add(newStatistick)
-        session.commit()
-
-
-def update_targets_for_user(userID:int, targets:list[str]):
-    with Session() as session:
-        session.query(User).filter(User.id==userID)\
-            .update({User.targets:targets})
-        session.commit()    
 
 def update_payload(userID:int, payload:str):
     with Session() as session:
@@ -202,12 +133,6 @@ def update_payload(userID:int, payload:str):
             .update({User.payload:payload}) 
         session.commit()
 
-def update_model(userID:int, model:str):
-    
-    with Session() as session:
-        session.query(User).filter(User.id==userID)\
-            .update({User.model:model})
-        session.commit()
 
 def update_token_for_user(userID:int, token:float):
     with Session() as session:
@@ -231,57 +156,46 @@ def update_post(postID:int, theme:str, location:list[str], targets:list[str], lo
                      Post.targets:targets}) 
         session.commit()
 
-
-def get_model(userID:int)->str:
+def _update_group_for_user(userID:int, groups:list[int]):
     with Session() as session:
         user=session.query(User).filter(User.id==userID).one()
-        return user.model
-
-def get_posts():
+        user.groups=groups
+        # session.add(user)
+        # user.groups.append(groupID)
+        session.commit()
+def _update_admin_for_group(groupID:int, admins:list[int]):
     with Session() as session:
-        posts=session.query(Post).filter(Post.token != None,
-                                        #  Post.created_date==(Post.created_date>=(datetime.now()-timedelta(days=2)))).all()
-                                         Post.date>=(datetime.now()-timedelta(days=1))).all()
-        return posts
-# ).all()
-def get_posts_for_targets(targets:list[str]):
+        group=session.query(Group).filter(Group.id==groupID).one()
+        group.admins=admins
+        session.commit()
+
+
+def add_group(userID:int, groupID:int):
     with Session() as session:
-        postsAll=[]
-        tempList=[]
-        for target in targets:
-            posts=session.query(Post).filter(Post.token != None,
-                                         Post.targets.any(target),
-                                         
-                                        #  Post.targets.contains(targets),
-                                         Post.date>=(datetime.now()-timedelta(days=1))).all()
-            
-            for post in posts:
-                if post.id not in tempList:
-                    postsAll.append(post)
-                    tempList.append(post.id)
-                
+        user=session.query(User).filter(User.id==userID).one()
+        pprint(user.__dict__)
+        
+        groups=user.groups
+        if groupID not in groups:
+            groups.append(groupID)
+        
 
-        return postsAll
+        _update_group_for_user(userID, groups)
 
-def get_posts_for_targets_and_location(targets:list[str], location:str):
+def add_admin(groupID:int, adminID:int):
     with Session() as session:
-        postsAll=[]
-        tempList=[]
-        for target in targets:
-            posts=session.query(Post).filter(Post.token != None,
-                                         Post.targets.any(target),
-                                         Post.location_str.like(f'%{location}%'),
-                                        #  Post.targets.contains(targets),
-                                         Post.date>=(datetime.now()-timedelta(days=1))).all()
-            
-            for post in posts:
-                if post.id not in tempList:
-                    postsAll.append(post)
-                    tempList.append(post.id)
-                
+        group=session.query(Group).filter(Group.id==groupID).one()
+        admins=group.admins
+        if adminID not in admins:
+            admins.append(adminID)
+        _update_admin_for_group(groupID, admins)
 
-        return postsAll
+def get_user(userID:int)->User:
+    with Session() as session:
+        user=session.query(User).filter(User.id==userID).one()
+        return user
 
+ 
 def get_payload(userID:int)->str:
     with Session() as session:
         user=session.query(User).filter(User.id==userID).one()
@@ -291,6 +205,13 @@ def get_targets_for_user(userID)->list[str]:
     with Session() as session:
         user=session.query(User).filter(User.id==userID).one()
         return user.targets
+
+def get_all_active_groups_ids()->list[int]:
+    with Session() as session:
+        groups=session.query(Group).filter(Group.active==True).all()
+        return groups
+    
+
 
 def get_top_count_targets()->list[str]:
     with Session() as session:
@@ -337,6 +258,15 @@ def check_post(textPost:str)->bool:
         else:
             return False
 
+
+
+if __name__ == '__main__':
+    pass
+    # add_new_user(1, 'test', 2)
+    # add_group(1, 6)
+    # add_new_group(1, 'test')    
+    # session.commit()
+    # print(user.__dict__)
 # a=get_top_count_targets()
 # pprint(a)
 # for i in a:

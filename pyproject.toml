@@ -16,6 +16,8 @@ flask = "^3.0.3"
 redis = "^5.0.3"
 binance = "^0.3"
 python-binance = "^1.0.19"
+psycopg2-binary = "^2.9.9"
+sqlalchemy = "^2.0.30"
 
 
 [build-system]
