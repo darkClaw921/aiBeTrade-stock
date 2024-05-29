@@ -43,13 +43,18 @@ async def new_message_listener(event):
     userID=event.message.sender_id
     text=event.message.text
     # pprint(event.__dict__)
-    
+
     pprint(event.message.__dict__)
     # pprint(event.__dict__['_input_chat'].__dict__)
-    print('peer_id') #caat
-    pprint(event.peer_id.__dict__)
-    pprint(event.__dict__['_chat_peer'].__dict__)
+    print('from_id') #caat
+    pprint(event.from_id.__dict__)
+    # pprint(event.__dict__['_chat_peer'].__dict__)
+    chatID=event.peer_id.channel_id
+    
     print(f'{userID=}')
+    print(f'{chatID=}')
+    print(f'{text=}')
+
     
     if text.find('#gpt') != -1:
         1+0
