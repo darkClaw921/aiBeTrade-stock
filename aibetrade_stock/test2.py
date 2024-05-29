@@ -86,8 +86,15 @@ async def new_message_listener(event):
     
     else:
         # sender= await client.get_peer_id(userID)
-        users=await client.get_participants(my_chat)    
+        print('sender')
+        sender = await event.get_input_sender()
+        pprint(sender)
+
+        print('dialogs')
+        users=await client.get_dialogs(my_chat)    
+        dialogs = await client.get_dialogs()
         pprint(users)
+        # event.get_
         try:
             user_entity = await client.get_input_entity(PeerUser(userID))
             user_entity = await client.get_entity(PeerUser(userID))
