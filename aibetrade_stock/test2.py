@@ -46,11 +46,11 @@ async def new_message_listener(event):
 
     pprint(event.message.__dict__)
     # pprint(event.__dict__['_input_chat'].__dict__)
-    print('from_id') #caat
-    pprint(event.from_id.__dict__)
+    # print('from_id') #caat
+    # pprint(event.from_id.__dict__)
     # pprint(event.__dict__['_chat_peer'].__dict__)
     chatID=event.peer_id.__dict__
-    pprint(chatID)
+    # pprint(chatID)
     print('peer_id')
     match event.peer_id.__dict__:
 
@@ -69,7 +69,7 @@ async def new_message_listener(event):
             pprint(event.peer_id.__dict__)
             typeChat='error'
     
-    pprint(event.peer_id.__dict__)
+    # pprint(event.peer_id.__dict__)
     message_id=event.message.id
     print(f'{userID=}')
     print(f'{chatID=}')
