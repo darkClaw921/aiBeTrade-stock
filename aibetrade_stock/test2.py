@@ -51,12 +51,20 @@ async def new_message_listener(event):
     # pprint(event.__dict__['_chat_peer'].__dict__)
     chatID=event.peer_id.__dict__
     print('peer_id')
+    try:
+        chatID=chatID['channel_id'] #chenal
+        typeChat='chenal'
+    except: 
+        chatID=chatID['chat_id'] #group
+        typeChat='group'
+    
     pprint(event.peer_id.__dict__)
     message_id=event.message.id
     print(f'{userID=}')
     print(f'{chatID=}')
     print(f'{message_id=}')
     print(f'{text=}')
+    print(f'{typeChat=}')
 
     
     if text.find('#gpt') != -1:
