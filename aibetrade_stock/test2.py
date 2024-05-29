@@ -52,12 +52,21 @@ async def new_message_listener(event):
     chatID=event.peer_id.__dict__
     pprint(chatID)
     print('peer_id')
-    try:
-        chatID=chatID['channel_id'] #chenal
-        typeChat='chenal'
-    except: 
-        chatID=chatID['chat_id'] #group
-        typeChat='group'
+    match event.peer_id.__dict__:
+
+        case['channel_id']:
+            chatID=chatID['channel_id']
+            typeChat='chenal'
+        case['chat_id']:
+            chatID=chatID['chat_id']
+            typeChat='group'
+        case['user_id']:
+            chatID=chatID['user_id']
+            typeChat='user'
+        case _:
+            print('error')
+            pprint(event.peer_id.__dict__)
+            typeChat='error'
     
     pprint(event.peer_id.__dict__)
     message_id=event.message.id
