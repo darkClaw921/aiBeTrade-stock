@@ -122,7 +122,7 @@ def add_new_message(messageID:int, chatID:int, userID:int, text:str, type_chat:s
         newMessage=Message(
             id=messageID,
             created_date=datetime.now(),
-            chat_id=chatID,
+            group_id=chatID,
             user_id=userID,
             text=text,
             type_chat=type_chat,
