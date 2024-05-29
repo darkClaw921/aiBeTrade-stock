@@ -54,14 +54,15 @@ async def new_message_listener(event):
     print('peer_id')
     match event.peer_id.__dict__:
 
-        case['channel_id']:
-            chatID=chatID['channel_id']
+        case {'channel_id': chatID}:
+            chatID=chatID
             typeChat='chenal'
-        case['chat_id']:
-            chatID=chatID['chat_id']
+        case {'chat_id': chatID}:
+            chatID=chatID
             typeChat='group'
-        case['user_id']:
-            chatID=chatID['user_id']
+
+        case {'user_id': chatID}:
+            chatID=chatID
             typeChat='user'
         case _:
             print('error')
