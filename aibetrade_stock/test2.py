@@ -45,14 +45,14 @@ async def new_message_listener(event):
     text=event.message.text
     # pprint(event.__dict__)
 
-    pprint(event.message.__dict__)
+    # pprint(event.message.__dict__)
     # pprint(event.__dict__['_input_chat'].__dict__)
     # print('from_id') #caat
     # pprint(event.from_id.__dict__)
     # pprint(event.__dict__['_chat_peer'].__dict__)
     chatID=event.peer_id.__dict__
     # pprint(chatID)
-    print('peer_id')
+    # print('peer_id')
     my_chat= ''
     match event.peer_id.__dict__:
 
@@ -87,17 +87,18 @@ async def new_message_listener(event):
     else:
         # sender= await client.get_peer_id(userID)
         
-        sender = await event.get_input_sender()
-        print('sender')
-        pprint(sender.__dict__)
+        # sender = await event.get_input_sender()
+        # print('sender')
+        # pprint(sender.__dict__)
 
-        print('dialogs')
+        # print('dialogs')
         # users=await client.get_dialogs(my_chat)    
-        dialogs = await client.get_dialogs()
-        print('dialogs')
-        pprint(dialogs)
+        
+        # print('dialogs')
+        # pprint(dialogs)
         # event.get_
         try:
+            dialogs = await client.get_dialogs()
             user_entity = await client.get_input_entity(PeerUser(userID))
             user_entity = await client.get_entity(PeerUser(userID))
         except:
