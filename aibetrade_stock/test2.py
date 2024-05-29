@@ -50,6 +50,7 @@ async def new_message_listener(event):
     pprint(event.from_id.__dict__)
     # pprint(event.__dict__['_chat_peer'].__dict__)
     chatID=event.peer_id.__dict__
+    pprint(chatID)
     print('peer_id')
     try:
         chatID=chatID['channel_id'] #chenal
