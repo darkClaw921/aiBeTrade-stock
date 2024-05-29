@@ -87,9 +87,15 @@ async def new_message_listener(event):
             username=user_entity.username
         else:
             username='no username'
-            
         postgreWork.add_new_user(userID,username, chatID)
+
+        if postgreWork.check_group(chatID)==False:
+            chat= await client.get_entity(chatID)
+            postgreWork.add_new_group(chatID, chat.title)
+            
         postgreWork.add_new_message(message_id, chatID, userID, text, typeChat,'')
+        
+
 
 
     

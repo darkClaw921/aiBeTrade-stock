@@ -75,7 +75,7 @@ class Group(Base):
 
 class Message(Base):
     __tablename__ = 'Message'
-    id = Column(BigInteger, primary_key=True)
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
     created_date = Column(DateTime)
     group_id = Column(BigInteger, ForeignKey('Group.id'))
     user_id = Column(BigInteger, ForeignKey('User.id'))
@@ -120,7 +120,7 @@ def add_new_group(groupID:int, name:str,):
 def add_new_message(messageID:int, chatID:int, userID:int, text:str, type_chat:str,payload:str):
     with Session() as session:
         newMessage=Message(
-            id=messageID,
+            message_id=messageID,
             created_date=datetime.now(),
             group_id=chatID,
             user_id=userID,
@@ -266,6 +266,13 @@ def check_user(userID:int)->bool:
     with Session() as session:
         users=session.query(User).filter(User.id==userID).all()
         if len(users) > 0:
+            return True
+        else:
+            return False
+def check_group(groupID:int)->bool:
+    with Session() as session:
+        groups=session.query(Group).filter(Group.id==groupID).all()
+        if len(groups) > 0:
             return True
         else:
             return False
