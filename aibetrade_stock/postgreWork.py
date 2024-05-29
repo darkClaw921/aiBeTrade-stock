@@ -82,6 +82,7 @@ class Message(Base):
     text = Column(String)
     message_id = Column(BigInteger)
     payload = Column(String)
+    type_chat = Column(String)
 
 Base.metadata.create_all(engine)
 
@@ -96,12 +97,14 @@ def add_new_user(userID:int, nickname:str, gropupID:int):
             id=userID,
             nickname=nickname,
             all_token=0,
-            all_token_price=0,
-         
+            all_token_price=0,         
         )
-        newUser.add_group(gropupID)
+        
         session.add(newUser)
         session.commit()
+
+        add_group(userID, gropupID)
+
 
 def add_new_group(groupID:int, name:str,):
     with Session() as session:
@@ -114,7 +117,7 @@ def add_new_group(groupID:int, name:str,):
         session.add(newGroup)
         session.commit()
 
-def add_new_message(messageID:int, chatID:int, userID:int, text:str, payload:str):
+def add_new_message(messageID:int, chatID:int, userID:int, text:str, type_chat:str,payload:str):
     with Session() as session:
         newMessage=Message(
             id=messageID,
@@ -122,6 +125,7 @@ def add_new_message(messageID:int, chatID:int, userID:int, text:str, payload:str
             chat_id=chatID,
             user_id=userID,
             text=text,
+            type_chat=type_chat,
             payload=payload
         )
         session.add(newMessage)
@@ -258,7 +262,13 @@ def check_post(textPost:str)->bool:
         else:
             return False
 
-
+def check_user(userID:int)->bool:
+    with Session() as session:
+        users=session.query(User).filter(User.id==userID).all()
+        if len(users) > 0:
+            return True
+        else:
+            return False
 
 if __name__ == '__main__':
     pass

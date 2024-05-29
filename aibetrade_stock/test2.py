@@ -9,6 +9,7 @@ import random
 load_dotenv()
 import os
 import base64
+import postgreWork
 
 
 # Вставьте ваши данные для подключения к Telegram API
@@ -76,6 +77,13 @@ async def new_message_listener(event):
     print(f'{message_id=}')
     print(f'{text=}')
     print(f'{typeChat=}')
+    if postgreWork.check_user(userID):
+        postgreWork.add_new_message(message_id, chatID, userID, text, typeChat,'')
+    else:
+        sender= await client.get_peer_id(userID)
+        postgreWork.add_new_user(userID,sender.username, chatID)
+        postgreWork.add_new_message(message_id, chatID, userID, text, typeChat,'')
+
 
     
     if text.find('#gpt') != -1:
