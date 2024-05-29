@@ -81,7 +81,10 @@ async def new_message_listener(event):
         postgreWork.add_new_message(message_id, chatID, userID, text, typeChat,'')
     else:
         # sender= await client.get_peer_id(userID)
-        user_entity = await client.get_entity(int(userID))
+        try:
+            user_entity = await client.get_entity(int(userID))
+        except:
+            user_entity = await client.get_input_entity(int(userID))
         username=''
         if user_entity.username:
             username=user_entity.username
@@ -92,7 +95,7 @@ async def new_message_listener(event):
         if postgreWork.check_group(chatID)==False:
             chat= await client.get_entity(chatID)
             postgreWork.add_new_group(chatID, chat.title)
-            
+
         postgreWork.add_new_message(message_id, chatID, userID, text, typeChat,'')
         
 
@@ -172,6 +175,7 @@ def main():
     print('Подключение разорвано')
 
 if __name__ == '__main__':
-    
+    # a=client.get_input_entity(686120189)
+    # print(a)
     main()
         # print('Подключение потеряно, переподключение...')
