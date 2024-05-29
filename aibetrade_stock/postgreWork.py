@@ -59,15 +59,13 @@ class Group(Base):
     name=Column(String)
     telegram_group_link = Column(String, nullable=False)
     create_date = Column(DateTime)
-    # admins=relationship('User', back_populates='groupsAdmin')
-    # admins=Column(ARRAY(User))
     admins = Column(ARRAY(BigInteger), default=[])
     active=Column(BOOLEAN, default=True)
-    def __init__(self, id,name ):
+    def __init__(self, id, name ,create_date):
         self.id = id
         self.name = name
-        # self.nickname = nickname
-        self.telegram_group_link = f"https://t.me/{name}"
+        self.telegram_group_link = f"https://t.me/{id}"
+        self.create_date = datetime.now()
     
     def add_admin(self, adminID:int):
         if adminID not in self.admins:
@@ -109,9 +107,9 @@ def add_new_user(userID:int, nickname:str, gropupID:int):
 def add_new_group(groupID:int, name:str,):
     with Session() as session:
         newGroup=Group(
+            create_date=datetime.now(),
             id=groupID,
             name=name,
-            create_date=datetime.now(),
             # telegram_group_link=telegram_group_link,
         )
         session.add(newGroup)
@@ -278,10 +276,10 @@ def check_group(groupID:int)->bool:
             return False
 
 if __name__ == '__main__':
-    pass
+    # pass
     # add_new_user(1, 'test', 2)
     # add_group(1, 6)
-    # add_new_group(1, 'test')    
+    add_new_group(1, 'test')    
     # session.commit()
     # print(user.__dict__)
 # a=get_top_count_targets()
