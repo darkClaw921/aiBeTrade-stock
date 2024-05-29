@@ -82,9 +82,11 @@ async def new_message_listener(event):
     else:
         # sender= await client.get_peer_id(userID)
         try:
-            user_entity = await client.get_entity(int(userID))
+            user_entity = await client.get_input_entity(PeerUser(userID))
+            user_entity = await client.get_entity(PeerUser(userID))
         except:
-            user_entity    = await client.get_entity(PeerUser(userID))
+            user_entity = await client.get_entity(int(userID))
+
         username=''
         if user_entity.username:
             username=user_entity.username
