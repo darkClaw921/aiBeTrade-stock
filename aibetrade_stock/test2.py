@@ -53,14 +53,17 @@ async def new_message_listener(event):
     chatID=event.peer_id.__dict__
     # pprint(chatID)
     print('peer_id')
+    my_chat= ''
     match event.peer_id.__dict__:
 
         case {'channel_id': chatID}:
             chatID=chatID
             typeChat='chenal'
+            my_chat= await client.get_entity(PeerChannel(chatID))
         case {'chat_id': chatID}:
             chatID=chatID
             typeChat='group'
+            my_chat= await client.get_entity(PeerChat(chatID))
 
         case {'user_id': chatID}:
             chatID=chatID
@@ -77,8 +80,10 @@ async def new_message_listener(event):
     print(f'{message_id=}')
     print(f'{text=}')
     print(f'{typeChat=}')
+    
     if postgreWork.check_user(userID):
         postgreWork.add_new_message(message_id, chatID, userID, text, typeChat,'')
+    
     else:
         # sender= await client.get_peer_id(userID)
         try:
