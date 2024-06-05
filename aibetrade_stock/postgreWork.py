@@ -45,6 +45,7 @@ class User(Base):
     all_token_price=Column(Float)
     payload=Column(String)
     groups = Column(ARRAY(BigInteger), default=[])
+    # firs_message=Column(BOOLEAN, default=False)
     # isAdmin=Column(BOOLEAN, default=False)
     # groupsAdmin=relationship('Group', back_populates='admins')
     def add_group(self, groupID:int):
@@ -82,6 +83,56 @@ class Message(Base):
     type_chat = Column(String)
     text = Column(String)
 
+class Task(Base):
+    __tablename__ = 'Task'
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    created_date = Column(DateTime)
+    group_id = Column(BigInteger, ForeignKey('Group.id'))
+    first_message=Column(String)
+    promt_message=Column(String)
+
+    message_id = Column(BigInteger)
+    payload = Column(String)
+    type_chat = Column(String)
+    text = Column(String)
+    status = Column(String)
+    # group_id = Column(BigInteger, ForeignKey('Group.id'))
+    # user_id = Column(BigInteger, ForeignKey('User.id'))    
+    # message_id = Column(BigInteger)
+    # payload = Column(String)
+    # type_chat = Column(String)
+    # text = Column(String)
+
+class Calls(Base):
+    __tablename__ = 'Calls'
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    created_date = Column(DateTime)
+    group_id = Column(BigInteger, ForeignKey('Group.id'))
+    user_id = Column(BigInteger, ForeignKey('User.id'))
+    first_message=Column(String)
+
+    message_id = Column(BigInteger)
+    payload = Column(String)
+    type_chat = Column(String)
+    text = Column(String)
+    status = Column(String)
+    is_dialog=Column(BOOLEAN)
+    is_first_message=Column(BOOLEAN)
+
+class CallMessage(Base):
+    __tablename__ = 'CallMessage'
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    created_date = Column(DateTime)
+    group_id = Column(BigInteger, ForeignKey('Group.id'))
+    user_id = Column(BigInteger, ForeignKey('User.id'))
+    first_message=Column(String)
+
+    message_id = Column(BigInteger)
+    payload = Column(String)
+    type_chat = Column(String)
+    text = Column(String)
+    status = Column(String)
+    
 
 Base.metadata.create_all(engine)
 
