@@ -197,12 +197,12 @@ async def new_message_listener(event):
 async def main():
     
     print('[OK]')
-    full_channel = await client(GetFullChannelRequest(2119323766))
+    # full_channel = await client(GetFullChannelRequest(2119323766))
 
     # Получаем описание канала
-    description = full_channel.full_chat.about
-    print(f"Описание канала: {description}")
-    # client.run_until_disconnected()
+    # description = full_channel.full_chat.about
+    # print(f"Описание канала: {description}")
+    client.run_until_disconnected()
     # print('Подключение разорвано')
 
 if __name__ == '__main__':
