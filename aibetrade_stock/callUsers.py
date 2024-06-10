@@ -44,7 +44,7 @@ def split_text(text, max_length):
     # Пример     использования функции:
 
         
-def send_message(chatID, message, threadID=None):
+def send_message(chatID, message, threadID):
     # client.send_message(entity=chatID, message=message, message_thread_id=threadID)
     # client.send_message(entity=-2118909508, message=message, message_thread_id=4294967329)
 # https://t.me/+tMRqqjOo2BplZGM6

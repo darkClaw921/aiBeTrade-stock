@@ -13,7 +13,7 @@ from workBinance import get_BTC_analit_for, get_price_now
 # from loguru import logger
 import random 
 from workFlask import send_message
-
+from postgreWork import *
 load_dotenv()
 # sql = workYDB.Ydb()
 
@@ -268,13 +268,133 @@ def forecastText(day:int, coin='Bitcoin'):
         pprint(e)
         # logger.debug(f'{e=}')
 
+import re
+def ABTSerch(command: str):
+    # Регулярные выражения для команд
+    start_new_task_pattern = r'start_new_task name="(.+?)" link_promt="(.+?)" message="(.+?)"'
+    view_task_pattern = r'view_task'
+    change_task_pattern = r'change_task id=(\d+) name="(.+?)" link_promt="(.+?)" message="(.+?)"'
+    delete_task_pattern = r'delete_task id_task=(\d+)'
+    add_new_channel_pattern = r'add_new_channel id_task=(\d+) id_channel=(\d+)'
+    view_channel_pattern = r'view_channel id_task=(\d+)'
+    change_channel_pattern = r'change_channel id_task=(\d+) id_channel=(\d+)'
+    delete_channel_pattern = r'delete_channel id_task=(\d+)'
+    start_search_pattern = r'start_search id=(\d+) id_channel=(\d+)'
+    stop_search_pattern = r'stop_search id=(\d+)'
+    status_task_pattern = r'status_task id=(\d+)'
+    count_search_pattern = r'count_search id_task=(\d+)'
+    start_call_pattern = r'start_call id_task=(\d+)'
+
+    match command:
+        case _ if re.match(start_new_task_pattern, command):
+            name, link_prompt, message = re.findall(start_new_task_pattern, command)[0]
+            new_task = Task(created_date=datetime.datetime.now(), first_message=message, promt_message=link_prompt, status='New')
+            session.add(new_task)
+            session.commit()
+            task_id = new_task.id
+            return f'Task new add successful. ID TASK={task_id}'
+
+        case _ if re.match(view_task_pattern, command):
+            tasks = session.query(Task).all()
+            return [(task.id, task.first_message, task.promt_message, task.status) for task in tasks]
+
+        case _ if re.match(change_task_pattern, command):
+            task_id, name, link_prompt, message = re.findall(change_task_pattern, command)[0]
+            task = session.query(Task).filter(Task.id == task_id).first()
+            if task:
+                task.first_message = message
+                task.promt_message = link_prompt
+                task.status = name
+                session.commit()
+                return f'Task {task_id} updated successfully.'
+
+        case _ if re.match(delete_task_pattern, command):
+            task_id = re.findall(delete_task_pattern, command)[0]
+            task = session.query(Task).filter(Task.id == task_id).first()
+            if task:
+                session.delete(task)
+                session.commit()
+                return f'Task {task_id} deleted successfully.'
+
+        case _ if re.match(add_new_channel_pattern, command):
+            task_id, channel_id = re.findall(add_new_channel_pattern, command)[0]
+            task = session.query(Task).filter(Task.id == task_id).first()
+            if task:
+                task.groups.append(int(channel_id))
+                session.commit()
+                return f'Channel {channel_id} added to task {task_id} successfully.'
+
+        case _ if re.match(view_channel_pattern, command):
+            task_id = re.findall(view_channel_pattern, command)[0]
+            task = session.query(Task).filter(Task.id == task_id).first()
+            if task:
+                return task.groups
+
+        case _ if re.match(change_channel_pattern, command):
+            task_id, channel_id = re.findall(change_channel_pattern, command)[0]
+            task = session.query(Task).filter(Task.id == task_id).first()
+            if task:
+                task.groups = [int(channel_id)]
+                session.commit()
+                return f'Channel {channel_id} for task {task_id} updated successfully.'
+
+        case _ if re.match(delete_channel_pattern, command):
+            task_id = re.findall(delete_channel_pattern, command)[0]
+            task = session.query(Task).filter(Task.id == task_id).first()
+            if task:
+                task.groups = []
+                session.commit()
+                return f'Channel for task {task_id} deleted successfully.'
+
+        case _ if re.match(start_search_pattern, command):
+            task_id, channel_id = re.findall(start_search_pattern, command)[0]
+            task = session.query(Task).filter(Task.id == task_id).first()
+            if task:
+                task.status = 'Search'
+                session.commit()
+                # Отправка сообщения в телеграм о статусе
+                return f'Status: Search completed  ID Task: {task_id}'
+
+        case _ if re.match(stop_search_pattern, command):
+            task_id = re.findall(stop_search_pattern, command)[0]
+            task = session.query(Task).filter(Task.id == task_id).first()
+            if task:
+                task.status = 'Stop'
+                session.commit()
+                # Отправка сообщения в телеграм о статусе
+                return f'Status: Stop completed  ID Task: {task_id}'
+
+        case _ if re.match(status_task_pattern, command):
+            task_id = re.findall(status_task_pattern, command)[0]
+            task = session.query(Task).filter(Task.id == task_id).first()
+            if task:
+                return (task.id, task.first_message, task.promt_message, task.status)
+
+        case _ if re.match(count_search_pattern, command):
+            task_id = re.findall(count_search_pattern, command)[0]
+            count = session.query(Calls).filter(Calls.task_id == task_id).distinct(Calls.user_id).count()
+            return f'Unique users for task {task_id}: {count}'
+
+        case _ if re.match(start_call_pattern, command):
+            task_id = re.findall(start_call_pattern, command)[0]
+            task = session.query(Task).filter(Task.id == task_id).first()
+            if task:
+                task.status = 'Calling'
+                session.commit()
+                # Отправка сообщения в телеграм о статусе
+                return f'Status: Calling completed  ID Task: {task_id}'
+
+        case _:
+            return 'Invalid command.'
+
 
 
 if __name__ == '__main__':
 
     # send_message(-1002118909508,'test',1)
+    a = ABTSerch('view_task')
 
-    a=forecastText(0) 
+    # a=forecastText(0) 
     print(a)
     # send_message(2118909508,a,1)
     # print(a)

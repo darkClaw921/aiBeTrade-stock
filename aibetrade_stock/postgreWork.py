@@ -2,7 +2,7 @@ from sqlalchemy import (create_engine, Column,
                         Integer, Float, String,
                         DateTime, JSON, ARRAY, 
                         BigInteger, func, text, 
-                        BOOLEAN, URL, ForeignKey)
+                        BOOLEAN, URL, ForeignKey, cast)
 # from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker,relationship, declarative_base
 import os
@@ -62,6 +62,7 @@ class Group(Base):
     create_date = Column(DateTime)
     admins = Column(ARRAY(BigInteger), default=[])
     active=Column(BOOLEAN, default=True)
+    
     def __init__(self, id, name ,create_date):
         self.id = id
         self.name = name
@@ -87,21 +88,13 @@ class Task(Base):
     __tablename__ = 'Task'
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     created_date = Column(DateTime)
-    group_id = Column(BigInteger, ForeignKey('Group.id'))
     first_message=Column(String)
     promt_message=Column(String)
-
-    message_id = Column(BigInteger)
+    groups=Column(ARRAY(BigInteger))
     payload = Column(String)
     type_chat = Column(String)
-    text = Column(String)
     status = Column(String)
-    # group_id = Column(BigInteger, ForeignKey('Group.id'))
-    # user_id = Column(BigInteger, ForeignKey('User.id'))    
-    # message_id = Column(BigInteger)
-    # payload = Column(String)
-    # type_chat = Column(String)
-    # text = Column(String)
+    
 
 class Calls(Base):
     __tablename__ = 'Calls'
@@ -109,9 +102,7 @@ class Calls(Base):
     created_date = Column(DateTime)
     group_id = Column(BigInteger, ForeignKey('Group.id'))
     user_id = Column(BigInteger, ForeignKey('User.id'))
-    first_message=Column(String)
 
-    message_id = Column(BigInteger)
     payload = Column(String)
     type_chat = Column(String)
     text = Column(String)
@@ -125,7 +116,7 @@ class CallMessage(Base):
     created_date = Column(DateTime)
     group_id = Column(BigInteger, ForeignKey('Group.id'))
     user_id = Column(BigInteger, ForeignKey('User.id'))
-    first_message=Column(String)
+    # first_message=Column(String)
 
     message_id = Column(BigInteger)
     payload = Column(String)
@@ -135,10 +126,12 @@ class CallMessage(Base):
     
 
 Base.metadata.create_all(engine)
-
+# Base.metadata.update_all(engine)
 
 Session = sessionmaker(bind=engine)
 session = Session()
+
+
 
 def add_new_user(userID:int, nickname:str, gropupID:int):
     with Session() as session:
@@ -155,6 +148,25 @@ def add_new_user(userID:int, nickname:str, gropupID:int):
 
         add_group(userID, gropupID)
 
+def add_group(userID:int, groupID:int):
+    with Session() as session:
+        user=session.query(User).filter(User.id==userID).one()
+        pprint(user.__dict__)
+        
+        groups=user.groups
+        if groupID not in groups:
+            groups.append(groupID)
+        
+
+        _update_group_for_user(userID, groups)
+
+def add_admin(groupID:int, adminID:int):
+    with Session() as session:
+        group=session.query(Group).filter(Group.id==groupID).one()
+        admins=group.admins
+        if adminID not in admins:
+            admins.append(adminID)
+        _update_admin_for_group(groupID, admins)
 
 def add_new_group(groupID:int, name:str,):
     with Session() as session:
@@ -181,12 +193,53 @@ def add_new_message(messageID:int, chatID:int, userID:int, text:str, type_chat:s
         session.add(newMessage)
         session.commit()
 
+def add_new_task(first_message:str, promt_message:str, groups:list[int]):
+    with Session() as session:
+        newTask=Task(
+            created_date=datetime.now(),
+            first_message=first_message,
+            promt_message=promt_message,
+            groups=groups,
+            status='new'
+        )
+        session.add(newTask)
+        session.commit()
+
+def add_call(groupID:int=None, userID:int=None, text:str='', is_dialog:bool=False, is_first_message:bool=False, status:str='new'):
+    with Session() as session:
+        newCall=Calls(
+            created_date=datetime.now(),
+            group_id=groupID,
+            user_id=userID,
+            text=text,
+            is_dialog=is_dialog,
+            is_first_message=is_first_message,
+            status=status
+        )
+        session.add(newCall)
+        session.commit()
+
+def add_call_message(groupID:int, userID:int, messageID:int, text:str, status:str='new'):
+    with Session() as session:
+        newCallMessage=CallMessage(
+            created_date=datetime.now(),
+            group_id=groupID,
+            user_id=userID,
+            message_id=messageID,
+            text=text,
+            status=status
+        )
+        session.add(newCallMessage)
+        session.commit()
+
+
+
+
 def update_payload(userID:int, payload:str):
     with Session() as session:
         session.query(User).filter(User.id==userID)\
             .update({User.payload:payload}) 
         session.commit()
-
 
 def update_token_for_user(userID:int, token:float):
     with Session() as session:
@@ -217,38 +270,43 @@ def _update_group_for_user(userID:int, groups:list[int]):
         # session.add(user)
         # user.groups.append(groupID)
         session.commit()
+
 def _update_admin_for_group(groupID:int, admins:list[int]):
     with Session() as session:
         group=session.query(Group).filter(Group.id==groupID).one()
         group.admins=admins
         session.commit()
 
-
-def add_group(userID:int, groupID:int):
+def update_status_task(taskID:str, status:str):
     with Session() as session:
-        user=session.query(User).filter(User.id==userID).one()
-        pprint(user.__dict__)
-        
-        groups=user.groups
-        if groupID not in groups:
-            groups.append(groupID)
-        
+        session.query(Task).filter(Task.id==taskID)\
+            .update({Task.status:status}) 
+        session.commit()
 
-        _update_group_for_user(userID, groups)
-
-def add_admin(groupID:int, adminID:int):
+def update_status_call(callID:str, status:str):
     with Session() as session:
-        group=session.query(Group).filter(Group.id==groupID).one()
-        admins=group.admins
-        if adminID not in admins:
-            admins.append(adminID)
-        _update_admin_for_group(groupID, admins)
+        session.query(Calls).filter(Calls.id==callID)\
+            .update({Calls.status:status}) 
+        session.commit()
+
+def update_call_is_first_message(callID:str, is_first_message:bool):
+    with Session() as session:
+        session.query(Calls).filter(Calls.id==callID)\
+            .update({Calls.is_first_message:is_first_message}) 
+        session.commit()
+def update_call_is_dialog(callID:str, is_dialog:bool):
+    with Session() as session:
+        session.query(Calls).filter(Calls.id==callID)\
+            .update({Calls.is_dialog:is_dialog}) 
+        session.commit()
+
+
+
 
 def get_user(userID:int)->User:
     with Session() as session:
         user=session.query(User).filter(User.id==userID).one()
         return user
-
  
 def get_payload(userID:int)->str:
     with Session() as session:
@@ -264,8 +322,6 @@ def get_all_active_groups_ids()->list[int]:
     with Session() as session:
         groups=session.query(Group).filter(Group.active==True).all()
         return groups
-    
-
 
 def get_top_count_targets()->list[str]:
     with Session() as session:
@@ -303,6 +359,52 @@ def get_all_user_ids()->list[int]:
             ids.append(user.id)
         return ids
 
+def get_promt_task(taskID:str)->str:
+    with Session() as session:
+        task=session.query(Task).filter(Task.id==taskID).one()
+        return task.promt_message
+
+def get_first_message_task(taskID:str)->str:
+    with Session() as session:
+        task=session.query(Task).filter(Task.id==taskID).one()
+        return task.first_message
+
+def get_all_users_for_task(taskID:str)->list[User]:
+    with Session() as session:
+        task=session.query(Task).filter(Task.id==taskID).one()
+        pprint(task.__dict__)
+        groups=task.groups
+        users=[]
+        # users=session.query(User).filter(User.groups.any(groups)).all()
+        users=session.query(User).filter(User.groups.op('&&')(cast(groups, ARRAY(BigInteger))))
+        # pprint(users)
+        # for groupID in groups:
+            
+        #     print(users)
+            # users.append()
+        return users
+
+def get_last_messages_for_user(userID:int, count:int=10)->list[Message]:
+    with Session() as session:
+        messages=session.query(Message).filter(Message.user_id==userID).order_by(Message.created_date.desc()).limit(count).all()
+        return messages
+
+def get_status_task(taskID:str)->str:
+    with Session() as session:
+        task=session.query(Task).filter(Task.id==taskID).one()
+        return task.status
+
+def get_status_call(callID:str)->str:
+    with Session() as session:
+        call=session.query(Calls).filter(Calls.id==callID).one()
+        return call.status
+
+def get_all_calls_for_task(taskID:str)->list[Calls]:
+    with Session() as session:
+        calls=session.query(Calls).filter(Calls.group_id==taskID).all()
+        return calls
+
+
 
 def check_post(textPost:str)->bool:
     with Session() as session:
@@ -330,8 +432,16 @@ def check_group(groupID:int)->bool:
 if __name__ == '__main__':
     # pass
     # add_new_user(1, 'test', 2)
-    # add_group(1, 6)
-    add_new_group(1, 'test')    
+    # # add_group(1, 6)
+    # add_new_group(2, 'test')    
+    # a=get_all_users_for_task(1)
+    # a=get_last_messages_for_user()
+    messages=get_last_messages_for_user(7083893297)   
+    allMessages=''
+    for message in messages:
+        allMessages+=message.text+'\n'
+    pprint(allMessages) 
+    # pprint(a)
     # session.commit()
     # print(user.__dict__)
 # a=get_top_count_targets()

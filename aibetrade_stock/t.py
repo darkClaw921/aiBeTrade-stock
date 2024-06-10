@@ -1,7 +1,7 @@
 import requests
 import json
 
-api_token = '6768830134:AAG1AUgQapY_whU3-VG63n9juJVC5kt7Gp8'
+api_token = ''
 chat_id = '515386623'
 
 api_url = f'https://api.telegram.org/bot{api_token}/getChat?chat_id={chat_id}'

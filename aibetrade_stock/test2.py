@@ -11,7 +11,8 @@ import os
 import base64
 import postgreWork
 from telethon.tl.types import PeerUser, PeerChat, PeerChannel
-
+from telethon.tl.functions.channels import GetFullChannelRequest
+import asyncio
 # Вставьте ваши данные для подключения к Telegram API
 # api_id = 'YOUR_API_ID'
 # api_hash = 'YOUR_API_HASH'
@@ -54,6 +55,7 @@ async def new_message_listener(event):
     # pprint(chatID)
     # print('peer_id')
     my_chat= ''
+    #TODO если call is_first_message==True и эт пользователь то ведем диалог с ним
     match event.peer_id.__dict__:
 
         case {'channel_id': chatID}:
@@ -145,7 +147,7 @@ async def new_message_listener(event):
     # dateNow = datetime.now().strftime("%d.%m.%Y %A")
     time.sleep(random.randint(5, 20))
     # promt=promt.replace('[dateNow]',dateNow)
-    
+    # 
     if text.find('#gpt') != -1:
         # if text.startswith('/image'):
         #     text = text.replace('/image ', '').replace('#gpt','')
@@ -192,15 +194,20 @@ async def new_message_listener(event):
     #chenalID записывается без -100 в начале -1002010911633
 
 # Запустите прослушивание новых сообщений
-def main():
+async def main():
     
     print('[OK]')
-    
-    client.run_until_disconnected()
-    print('Подключение разорвано')
+    full_channel = await client(GetFullChannelRequest(2119323766))
+
+    # Получаем описание канала
+    description = full_channel.full_chat.about
+    print(f"Описание канала: {description}")
+    # client.run_until_disconnected()
+    # print('Подключение разорвано')
 
 if __name__ == '__main__':
     # a=client.get_input_entity(686120189)
     # print(a)
-    main()
+    asyncio.run(main())
+    #  main()
         # print('Подключение потеряно, переподключение...')

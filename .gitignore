@@ -22,6 +22,7 @@ testDocker/
 # *.txt
 session_name.session
 session_name.session-journal
+session_name2.session
 # Distribution / packaging
 bin/
 kgtaprojects-8706cc47a185.json
