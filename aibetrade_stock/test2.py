@@ -202,7 +202,7 @@ async def main():
     # Получаем описание канала
     # description = full_channel.full_chat.about
     # print(f"Описание канала: {description}")
-    client.run_until_disconnected()
+    await client.run_until_disconnected()
     # print('Подключение разорвано')
 
 if __name__ == '__main__':
