@@ -194,7 +194,7 @@ async def new_message_listener(event):
     #chenalID записывается без -100 в начале -1002010911633
 
 # Запустите прослушивание новых сообщений
-async def main():
+def main():
     
     print('[OK]')
     # full_channel = await client(GetFullChannelRequest(2119323766))
@@ -202,12 +202,12 @@ async def main():
     # Получаем описание канала
     # description = full_channel.full_chat.about
     # print(f"Описание канала: {description}")
-    await client.run_until_disconnected()
+    client.run_until_disconnected()
     # print('Подключение разорвано')
 
 if __name__ == '__main__':
     # a=client.get_input_entity(686120189)
     # print(a)
-    asyncio.run(main())
-    #  main()
+    # asyncio.run(main())
+    main()
         # print('Подключение потеряно, переподключение...')
