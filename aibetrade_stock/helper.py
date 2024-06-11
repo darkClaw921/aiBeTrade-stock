@@ -392,10 +392,10 @@ def ABTSerch(command: str):
 if __name__ == '__main__':
 
     # send_message(-1002118909508,'test',1)
-    a = ABTSerch('view_task')
+    # a = ABTSerch('view_task')
 
-    # a=forecastText(0) 
-    print(a)
+    a=forecastText(0) 
+    # print(a)
     # send_message(2118909508,a,1)
     # print(a)
     
