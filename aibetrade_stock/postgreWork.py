@@ -130,7 +130,7 @@ Base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
 session = Session()
-
+# session
 
 
 def add_new_user(userID:int, nickname:str, gropupID:int):
@@ -441,6 +441,7 @@ if __name__ == '__main__':
     for message in messages:
         allMessages+=message.text+'\n'
     pprint(allMessages) 
+
     # pprint(a)
     # session.commit()
     # print(user.__dict__)
