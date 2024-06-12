@@ -45,7 +45,7 @@ async def message_me(text:str, userID):
     # text=msg.text
     comand=abt_serch(text)
     print(f'{comand=}')
-    if userID != 327475194:
+    if userID != 327475194 or userID != 6984701819:
         return None
     
     if comand=='Invalid command.':
