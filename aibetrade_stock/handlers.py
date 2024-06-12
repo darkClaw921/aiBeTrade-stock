@@ -217,7 +217,7 @@ async def delete_and_send_message(msg:Message, text='You have violated the rules
 def check_ref(msg:Message):
     """Проверка на реферальную ссылку true если его нету"""
 
-    if msg.text.find('http') != -1 and msg.text.find('aibetrade') != -1:
+    if (msg.text.find('http') != -1 or msg.text.find('t.me/') != -1) and msg.text.find('aibetrade') != -1:
         return True
     return False
 
@@ -240,6 +240,7 @@ async def message(msg: Message, state: FSMContext):
     # print(thereadID)
     print(f"{msg.text.find('aibetrade')=}")  
     print(f"{msg.text.find('http')=}")
+    print(f"{msg.text.find('t.me/')=}")
     
 
     #336464992 I OWN ZERGO
