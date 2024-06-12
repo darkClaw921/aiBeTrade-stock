@@ -12,7 +12,7 @@ import requests
 from workBinance import get_BTC_analit_for, get_price_now
 # from loguru import logger
 import random 
-from workFlask import send_message
+# from workFlask import send_message
 from postgreWork import *
 load_dotenv()
 # sql = workYDB.Ydb()
@@ -269,7 +269,7 @@ def forecastText(day:int, coin='Bitcoin'):
         # logger.debug(f'{e=}')
 
 import re
-def ABTSerch(command: str):
+def abt_serch(command: str):
     # Регулярные выражения для команд
     start_new_task_pattern = r'start_new_task name="(.+?)" link_promt="(.+?)" message="(.+?)"'
     view_task_pattern = r'view_task'
@@ -312,8 +312,8 @@ def ABTSerch(command: str):
             task_id = re.findall(delete_task_pattern, command)[0]
             task = session.query(Task).filter(Task.id == task_id).first()
             if task:
-                session.delete(task)
-                session.commit()
+                # session.delete(task)
+                # session.commit()
                 return f'Task {task_id} deleted successfully.'
 
         case _ if re.match(add_new_channel_pattern, command):
@@ -321,7 +321,7 @@ def ABTSerch(command: str):
             task = session.query(Task).filter(Task.id == task_id).first()
             if task:
                 task.groups.append(int(channel_id))
-                session.commit()
+                # session.commit()
                 return f'Channel {channel_id} added to task {task_id} successfully.'
 
         case _ if re.match(view_channel_pattern, command):
@@ -335,7 +335,7 @@ def ABTSerch(command: str):
             task = session.query(Task).filter(Task.id == task_id).first()
             if task:
                 task.groups = [int(channel_id)]
-                session.commit()
+                # session.commit()
                 return f'Channel {channel_id} for task {task_id} updated successfully.'
 
         case _ if re.match(delete_channel_pattern, command):
@@ -343,7 +343,7 @@ def ABTSerch(command: str):
             task = session.query(Task).filter(Task.id == task_id).first()
             if task:
                 task.groups = []
-                session.commit()
+                # session.commit()
                 return f'Channel for task {task_id} deleted successfully.'
 
         case _ if re.match(start_search_pattern, command):
@@ -351,7 +351,7 @@ def ABTSerch(command: str):
             task = session.query(Task).filter(Task.id == task_id).first()
             if task:
                 task.status = 'Search'
-                session.commit()
+                # session.commit()
                 # Отправка сообщения в телеграм о статусе
                 return f'Status: Search completed  ID Task: {task_id}'
 
@@ -360,7 +360,7 @@ def ABTSerch(command: str):
             task = session.query(Task).filter(Task.id == task_id).first()
             if task:
                 task.status = 'Stop'
-                session.commit()
+                # session.commit()
                 # Отправка сообщения в телеграм о статусе
                 return f'Status: Stop completed  ID Task: {task_id}'
 
@@ -380,7 +380,7 @@ def ABTSerch(command: str):
             task = session.query(Task).filter(Task.id == task_id).first()
             if task:
                 task.status = 'Calling'
-                session.commit()
+                # session.commit()
                 # Отправка сообщения в телеграм о статусе
                 return f'Status: Calling completed  ID Task: {task_id}'
 
@@ -392,10 +392,11 @@ def ABTSerch(command: str):
 if __name__ == '__main__':
 
     # send_message(-1002118909508,'test',1)
-    # a = ABTSerch('view_task')
-
-    a=forecastText(0) 
-    # print(a)
+    taskSTR='change_task id=1 name="test2" link_promt="https://t.me" message="Текст первого приветственного сообщения"'
+    a = abt_serch(taskSTR)
+    
+    # a=forecastText(0) 
+    print(a)
     # send_message(2118909508,a,1)
     # print(a)
     

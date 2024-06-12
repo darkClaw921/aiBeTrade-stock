@@ -62,7 +62,7 @@ import requests
 import hashlib
 import base64
 import json
-
+from helper import abt_serch
 # Define the secret key and other required information
 
 # task_code = "sub"
@@ -225,6 +225,21 @@ def chek_http(msg):
     if msg.text.find('http') != -1:
         return True
     return False
+async def message_me(msg:Message):
+    """Обработака сообщений от меня"""
+    text=msg.text
+    comand=abt_serch(text)
+    
+    if comand=='Invalid command.':
+        return None
+    if msg.from_user.id != 327475194:
+        return None
+    else:
+        await msg.answer(comand)
+        return comand
+    
+
+    pass
 #Обработка сообщений
 @router.message()
 async def message(msg: Message, state: FSMContext):
@@ -233,8 +248,12 @@ async def message(msg: Message, state: FSMContext):
     userID = msg.from_user.id
     # print(msg.chat.id)
     print(f"{msg.chat.id=}")
+    if await message_me(msg) is not None: #все сообщения от меня обрабатыаются в  message_me а none значит что это не мое сообщение
+        return 0
+    
     if msg.chat.id != -1002118909508:
         return 0
+    
     thereadID=msg.message_thread_id
     print(f"{thereadID=}")
     # print(thereadID)
