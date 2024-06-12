@@ -45,12 +45,14 @@ async def message_me(text:str, userID):
     # text=msg.text
     comand=abt_serch(text)
     print(f'{comand=}')
-    if comand=='Invalid command.':
-        return None
     if userID != 327475194:
         return None
+    
+    if comand=='Invalid command.':
+        return None
+    
     else:
-        await client.send_message(327475194, message=comand)
+        await client.send_message(327475194, message=str(comand))
         return comand
 @client.on(events.NewMessage())
 async def new_message_listener(event):

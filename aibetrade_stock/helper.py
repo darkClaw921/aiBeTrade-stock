@@ -392,7 +392,8 @@ def abt_serch(command: str):
 if __name__ == '__main__':
 
     # send_message(-1002118909508,'test',1)
-    taskSTR='change_task id=1 name="test2" link_promt="https://t.me" message="Текст первого приветственного сообщения"'
+    # taskSTR='change_task id=1 name="test2" link_promt="https://t.me" message="Текст первого приветственного сообщения"'
+    taskSTR='view_task'
     a = abt_serch(taskSTR)
     
     # a=forecastText(0) 
