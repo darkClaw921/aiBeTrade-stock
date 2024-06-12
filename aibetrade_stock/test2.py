@@ -13,6 +13,7 @@ import postgreWork
 from telethon.tl.types import PeerUser, PeerChat, PeerChannel
 from telethon.tl.functions.channels import GetFullChannelRequest
 import asyncio
+from helper import abt_serch
 # Вставьте ваши данные для подключения к Telegram API
 # api_id = 'YOUR_API_ID'
 # api_hash = 'YOUR_API_HASH'
@@ -38,7 +39,19 @@ chenalName = [-1001442825795,400923372]
 def encode_image(image_path):
   with open(image_path, "rb") as image_file:
     return base64.b64encode(image_file.read()).decode('utf-8')
-  
+
+async def message_me(text:str, userID):
+    """Обработака сообщений от меня"""
+    # text=msg.text
+    comand=abt_serch(text)
+    print(f'{comand=}')
+    if comand=='Invalid command.':
+        return None
+    if userID != 327475194:
+        return None
+    else:
+        await client.send_message(327475194, message=comand)
+        return comand
 @client.on(events.NewMessage())
 async def new_message_listener(event):
     # Обработка новых сообщений
@@ -55,6 +68,12 @@ async def new_message_listener(event):
     # pprint(chatID)
     # print('peer_id')
     my_chat= ''
+    print(f'{userID=}')
+    print(f'{chatID=}')
+    print(f'{text=}')
+    if await message_me(text=text,userID=userID) is not None: #все сообщения от меня обрабатыаются в  message_me а none значит что это не мое сообщение
+        return 0
+    
     #TODO если call is_first_message==True и эт пользователь то ведем диалог с ним
     match event.peer_id.__dict__:
 
