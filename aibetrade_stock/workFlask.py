@@ -5,11 +5,12 @@ from telethon.tl.types import InputPeerChat
 from dotenv import load_dotenv
 import os 
 from pprint import pprint
+import requests
 load_dotenv()
 # Замените значения ниже на ваши
 API_ID =os.getenv('API_ID') 
 API_HASH = os.getenv('API_HASH')
-
+TOKEN_BOT = os.getenv('TOKEN_BOT_EVENT')
 # PHONE_NUMBER = 'your_phone_number'
 # CHANNEL_ID = 'your_channel_id'
 # CHAT_ID = 'your_chat_id'
@@ -19,8 +20,10 @@ app = Flask(__name__)
 
 # Создаем Telegram клиент
 client = TelegramClient('session_name2', API_ID, API_HASH, system_version="4.16.32-vxCUSTOM", device_model='Flask Galaxy S24 Ultra, running Android 14')
-# client = TelegramClient('session_name_flask', API_ID, API_HASH, system_version="4.16.32-vxCUSTOM", device_model='Flask Galaxy S24 Ultra, running Android 14')
 client.start()
+
+
+# client = TelegramClient('session_name_flask', API_ID, API_HASH, system_version="4.16.32-vxCUSTOM", device_model='Flask Galaxy S24 Ultra, running Android 14')
 # client.suo
 # Функция для отправки сообщения в Telegram
 def split_text(text, max_length):
@@ -52,7 +55,7 @@ def send_message(chatID, message, threadID=None):
 # https://t.me/c/2118909508/33
     # text = "Это очень большой текст, который нужно разбить на несколько частей, чтобы отправить его в Telegram."
     max_length = 3000  # Максимальная длина сообщения в Telegram
-    chunks = split_text(message, max_length)
+    chunks = split_text(text=message, max_length=max_length)
     for chunk in chunks:
         # client.send_message(entity=chatID, message=message)#work
         client.send_message(entity=chatID, message=chunk)#work
@@ -85,6 +88,45 @@ def webhook():
         return jsonify({'success': True}), 200
     else:
         return jsonify({'error': 'Missing channel ID or message'}), 400
+    
+def check_user_in_chat(user_id, chat_id):
+        url = f'https://api.telegram.org/bot{TOKEN_BOT}/getChatMember'
+        params = {
+            'chat_id': chat_id,
+            'user_id': user_id
+        }
+        response = requests.get(url, params=params)
+        data = response.json()
+        pprint(data)
+        if data['ok']:
+            status = data['result']['status']
+            if status in ['member', 'administrator', 'creator']:
+                return True
+            else:
+                return False
+        else:
+            return False
+        
+@app.route('/check-members/<int:chat_id>/<int:user_id>', methods=['GET'])
+def check_members(chat_id, user_id):
+    # Получаем список участников канала
+    
+
+    TOKEN = 'YOUR_BOT_TOKEN'
+    CHAT_ID = 'your_chat_id'  # ID группы или супергруппы
+    USER_ID = 'user_id_to_check'
+
+    
+
+    is_in_chat = check_user_in_chat(chat_id, chat_id)
+    return is_in_chat
+#     new_func(is_in_chat)
+
+# def new_func(is_in_chat):
+#     if is_in_chat:
+#         print("User is a member of the chat.")
+#     else:
+#         print("User is not a member of the chat.")
 
 
 if __name__ == '__main__':
