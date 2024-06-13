@@ -289,7 +289,7 @@ def abt_serch(command: str):
         match command:
             case _ if re.match(start_new_task_pattern, command):
                 name, link_prompt, message = re.findall(start_new_task_pattern, command)[0]
-                new_task = Task(created_date=datetime.datetime.now(), first_message=message, promt_message=link_prompt, status='New')
+                new_task = Task(created_date=datetime.now(), first_message=message, promt_message=link_prompt, status='New')
                 session.add(new_task)
                 session.commit()
                 task_id = new_task.id
@@ -320,8 +320,8 @@ def abt_serch(command: str):
                 task_id = re.findall(delete_task_pattern, command)[0]
                 task = session.query(Task).filter(Task.id == task_id).first()
                 if task:
-                    # session.delete(task)
-                    # session.commit()
+                    session.delete(task)
+                    session.commit()
                     return f'Task {task_id} deleted successfully.'
 
             case _ if re.match(add_new_channel_pattern, command):
