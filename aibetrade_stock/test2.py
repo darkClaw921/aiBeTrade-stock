@@ -43,18 +43,24 @@ def encode_image(image_path):
 async def message_me(text:str, userID):
     """Обработака сообщений от меня"""
     # text=msg.text
+    print('-'*30)
+    print(f'{text=}')
+    # pprint(text)
+    admins=[327475194,6984701819,400923372]
+    if userID not in admins:
+        return None
+    
     comand=abt_serch(text)
     print(f'{comand=}')
     # if userID != 327475194 or userID != 6984701819:
-    admins=[327475194,6984701819]
-    if userID != 327475194:
-        return None
+    
     
     if comand=='Invalid command.':
         return None
     
     else:
-        await client.send_message(327475194, message=str(comand))
+        print(f'отправили сообщение  {comand=}')
+        await client.send_message(userID, message=str(comand))
         return comand
 @client.on(events.NewMessage())
 async def new_message_listener(event):
