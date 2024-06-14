@@ -112,9 +112,19 @@ async def new_message_listener(event):
     print(f'{text=}')
     print(f'{typeChat=}')
     
+    if postgreWork.check_group(chatID)==False:
+        chat= await client.get_entity(chatID)
+        try:
+            chat_title=chat.title
+        except:
+            chat_title='no title'   
+        postgreWork.add_new_group(chatID, chat_title)
+        # postgreWork.add_new_message(message_id, chatID, userID, text, typeChat,'')
+
     if postgreWork.check_user(userID):
+    # if postgreWork.check_group(chatID):
         postgreWork.add_new_message(message_id, chatID, userID, text, typeChat,'')
-    
+
     else:
         # sender= await client.get_peer_id(userID)
         
@@ -144,15 +154,7 @@ async def new_message_listener(event):
       
         postgreWork.add_new_user(userID,username, chatID)
 
-        if postgreWork.check_group(chatID)==False:
-            chat= await client.get_entity(chatID)
-            try:
-                chat_title=chat.title
-            except:
-                chat_title='no title'   
-            postgreWork.add_new_group(chatID, chat_title)
-
-        postgreWork.add_new_message(message_id, chatID, userID, text, typeChat,'')
+        
         
 
 
