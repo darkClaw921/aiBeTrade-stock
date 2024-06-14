@@ -39,7 +39,7 @@ def split_text(text, max_length):
         start += max_length
     return chunks
 
-def send_message(chatID, message, threadID=None):
+async def send_message(chatID, message, threadID=None):
     # client.send_message(entity=chatID, message=message, message_thread_id=threadID)
     # client.send_message(entity=-2118909508, message=message, message_thread_id=4294967329)
 # https://t.me/+tMRqqjOo2BplZGM6
@@ -50,7 +50,7 @@ def send_message(chatID, message, threadID=None):
     chunks = split_text(text=message, max_length=max_length)
     for chunk in chunks:
         # client.send_message(entity=chatID, message=message)#work
-        client.send_message(entity=chatID, message=chunk)#work
+        await client.send_message(entity=chatID, message=chunk)#work
 
 @app.post('/task/start/{taskID}')
 async def start_task(taskID: int):
@@ -74,7 +74,7 @@ async def start_task(taskID: int):
         messagesList = [{"role": "user", "content": allMessages}]
         answerGPT = gpt.answer(system=promt, topic=messagesList)
         
-        send_message(call.user_id, answerGPT, taskID)
+        await send_message(call.user_id, answerGPT, taskID)
         time.sleep(random.randint(60, 90))
         
     postgreWork.update_status_task(taskID, 'done')
@@ -100,7 +100,7 @@ async def first_contact(taskID: int):
         taskStatus = postgreWork.get_status_task(taskID)
         if taskStatus == 'stop':
             break
-        send_message(call.user_id, firstMessage, taskID)
+        await send_message(call.user_id, firstMessage, taskID)
         postgreWork.update_call_is_first_message(call.id, True)
         time.sleep(random.randint(60, 90))
     
