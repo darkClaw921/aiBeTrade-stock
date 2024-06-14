@@ -376,8 +376,12 @@ def get_all_users_for_task(taskID:str)->list[User]:
         groups=task.groups
         users=[]
         # users=session.query(User).filter(User.groups.any(groups)).all()
-        users=session.query(User).filter(User.groups.op('&&')(cast(groups, ARRAY(BigInteger))))
-        # pprint(users)
+        #get all users for groups in task 
+        # users=session.query(User).filter(User.groups.op('&&')(cast(groups, ARRAY(BigInteger))).distinct(User.id)).all()
+        users=session.query(Message).filter(Message.group_id.in_(groups)).distinct(Message.user_id).all()
+
+        # users=session.query(User).filter(User.groups.op('&&')(cast(groups, ARRAY(BigInteger))))
+        pprint(users)
         # for groupID in groups:
             
         #     print(users)
@@ -436,13 +440,14 @@ if __name__ == '__main__':
     # add_new_group(2, 'test')    
     # a=get_all_users_for_task(1)
     # a=get_last_messages_for_user()
-    messages=get_last_messages_for_user(7083893297)   
-    allMessages=''
-    for message in messages:
-        allMessages+=message.text+'\n'
-    pprint(allMessages) 
+    # messages=get_last_messages_for_user(7083893297)   
+    # allMessages=''
+    # for message in messages:
+    #     allMessages+=message.text+'\n'
+    # pprint(allMessages) 
+    a=get_all_users_for_task(2)
 
-    # pprint(a)
+    pprint(a)
     # session.commit()
     # print(user.__dict__)
 # a=get_top_count_targets()
