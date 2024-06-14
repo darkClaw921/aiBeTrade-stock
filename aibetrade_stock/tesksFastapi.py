@@ -116,7 +116,10 @@ async def stop_first_contact(taskID: int):
 async def create_call(taskID: int):
     users = postgreWork.get_all_users_for_task(taskID)
     for user in users:
-        postgreWork.add_call(userID=user.id, groupID=taskID)
+        try:
+            postgreWork.add_call(userID=user.id, groupID=taskID)
+        except:
+            continue
     
     return {'detail': 'Calls created'}
 
@@ -125,5 +128,6 @@ async def webhook():
     return {'detail': 'Webhook endpoint'}
 
 if __name__ == '__main__':
+    # create_call(2)
     import uvicorn
     uvicorn.run(app, host='0.0.0.0', port=5002)
