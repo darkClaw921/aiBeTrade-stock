@@ -87,7 +87,7 @@ import json
 # # Print the response
 # print("Status Code:", response.status_code)
 # print("Response Body:", response.json())
-def request_AiBeTrade(body):
+def request_AiBeTrade(body, webhook:str=WEBHOOK_URL):
     # body = {
     # "code": task_code,
     # "userId": user_id,
@@ -156,15 +156,46 @@ async def message(msg: CallbackQuery):
     
 #     pass
 
-@router.chat_member(ChatMemberUpdatedFilter(IS_MEMBER >> IS_NOT_MEMBER))
-async def on_user_leave(event: ChatMemberUpdated):
-    print('on_user_leave')
-    pprint(event)
-    print(event.from_user.id)
-    userID=event.from_user.id
-    chatID=event.chat.id
-    print(chatID)
-    task_code = f"sub{chatID}"
+@router.chat_boost()
+async def chat_boost_handler(chat_boost: types.ChatBoostUpdated) -> Any: 
+    
+    print(f'{"booost":_^34}')
+    pprint(chat_boost.__dict__)
+    print(f'{"chat":_^34}')
+    pprint(chat_boost.chat.__dict__)
+
+    userID=chat_boost.boost.source.user.id
+    chatID=chat_boost.chat.id
+    print(f"{chatID=}")
+    print(f"{userID=}")
+
+    task_code = f"boost{chatID}"
+    action = True
+    body={
+        "code": task_code,
+        "userId": userID,
+        "action": action
+    }
+    pprint(body)
+    request_AiBeTrade(body)
+    pass
+
+@router.removed_chat_boost()
+async def removed_chat_boost_handler(chat_boost: types.ChatBoostRemoved) -> Any: 
+    # pprint(chat_boost.__dict__)
+    # pprint(chat_boost.chat.__dict__)
+    print(f'{"booost":_^34}')
+    pprint(chat_boost.__dict__)
+    print(f'{"chat":_^34}')
+    pprint(chat_boost.chat.__dict__)
+
+    # pprint(chat_boost.source.__dict__)
+    userID=chat_boost.boost.source.user.id
+    chatID=chat_boost.chat.id
+    print(f"{chatID=}")
+    print(f"{userID=}")
+
+    task_code = f"boost{chatID}"
     action = False
     body={
         "code": task_code,
@@ -173,13 +204,32 @@ async def on_user_leave(event: ChatMemberUpdated):
     }
     pprint(body)
     request_AiBeTrade(body)
+    pass
+
+@router.chat_member(ChatMemberUpdatedFilter(IS_MEMBER >> IS_NOT_MEMBER))
+async def on_user_leave(event: ChatMemberUpdated):
+    print('on_user_leave')
+    # pprint(event)
+    # print(event.from_user.id)
+    userID=event.from_user.id
+    chatID=event.chat.id
+    # print(chatID)
+    task_code = f"sub{chatID}"
+    action = False
+    body={
+        "code": task_code,
+        "userId": userID,
+        "action": action
+    }
+    # pprint(body)
+    request_AiBeTrade(body)
 
 @router.chat_member(ChatMemberUpdatedFilter(IS_NOT_MEMBER >> IS_MEMBER))
 async def on_user_join(event: ChatMemberUpdated):
     # await message(event.message, event.state)  
     print('on_user_join')
-    pprint(event)
-    print(event.from_user.id)
+    # pprint(event)
+    # print(event.from_user.id)
     userID=event.from_user.id
     chatID=event.chat.id
     task_code = f"sub{chatID}"
@@ -189,10 +239,10 @@ async def on_user_join(event: ChatMemberUpdated):
         "userId": userID,
         "action": action
     }
-    pprint(body)
+    # pprint(body)
     request_AiBeTrade(body)
     
-    print(chatID)
+    # print(chatID)
     pass
 
 async def delete_and_send_message(msg:Message, text='You have violated the rules of this chat.  Message deleted. If you violate it again, you will be blocked.'):
@@ -236,18 +286,18 @@ async def message(msg: Message, state: FSMContext):
     # 241 реф ссылки #240
     userID = msg.from_user.id
     # print(msg.chat.id)
-    print(f"{msg.chat.id=}")
+    # print(f"{msg.chat.id=}")
     
     
     if msg.chat.id != -1002118909508:
         return 0
     
     thereadID=msg.message_thread_id
-    print(f"{thereadID=}")
+    # print(f"{thereadID=}")
     # print(thereadID)
-    print(f"{msg.text.find('aibetrade')=}")  
-    print(f"{msg.text.find('http')=}")
-    print(f"{msg.text.find('t.me/')=}")
+    # print(f"{msg.text.find('aibetrade')=}")  
+    # print(f"{msg.text.find('http')=}")
+    # print(f"{msg.text.find('t.me/')=}")
     
 
     #336464992 I OWN ZERGO

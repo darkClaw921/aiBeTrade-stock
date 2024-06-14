@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from telethon import TelegramClient, events, sync
 from telethon.tl.functions.messages import SendMessageRequest
-from telethon.tl.types import InputPeerChat
+from telethon.tl.types import InputPeerChat, InputPeerUser, PeerUser
 from dotenv import load_dotenv
 import os
 from pprint import pprint
@@ -10,6 +10,7 @@ from chat import GPT
 # from workFlask import send_message
 import random
 import time
+import asyncio
 
 load_dotenv()
 # Замените значения ниже на ваши
@@ -19,7 +20,6 @@ API_HASH = os.getenv('API_HASH')
 gpt = GPT()
 app = FastAPI()
 client = TelegramClient('session_name_i_own_zergo', API_ID, API_HASH, system_version="4.16.32-vxCUSTOM", device_model='FastAPI Galaxy S24 Ultra, running Android 14')
-client.start()
 
 def split_text(text, max_length):
     """
@@ -40,6 +40,7 @@ def split_text(text, max_length):
     return chunks
 
 async def send_message(chatID, message, threadID=None):
+    await client.start()
     # client.send_message(entity=chatID, message=message, message_thread_id=threadID)
     # client.send_message(entity=-2118909508, message=message, message_thread_id=4294967329)
 # https://t.me/+tMRqqjOo2BplZGM6
@@ -50,10 +51,32 @@ async def send_message(chatID, message, threadID=None):
     chunks = split_text(text=message, max_length=max_length)
     for chunk in chunks:
         # client.send_message(entity=chatID, message=message)#work
-        await client.send_message(entity=chatID, message=chunk)#work
+        # if chatID == 327475194: return  0
+        # try:
+        #     from_ = await client.get_entity(chatID)
+        # except:
+        #     await client.get_dialogs()
+        #     from_ = await client.get_entity(chatID)
+        user=postgreWork.get_user(chatID)
+        print(user.nickname) 
+        try:
+            await client.send_message(entity=chatID, message=chunk)#work
+        except:
+            await client.get_dialogs()    
+            await client.get_participants(user.nickname)
+            # pprint(user.nickname)
+                    # await client.get_participants(thread.name)
+                # await client.get_participants(threadID)
+        try:
+            # print(user.nickname) 
+            await client.send_message(entity=chatID, message=chunk)#wor
+        except:
+            return None
+
 
 @app.post('/task/start/{taskID}')
 async def start_task(taskID: int):
+    # 1/0
     calls = postgreWork.get_all_calls_for_task(taskID)
     statusTask = postgreWork.get_status_task(taskID)
     
@@ -62,8 +85,10 @@ async def start_task(taskID: int):
     
     postgreWork.update_status_task(taskID, 'processing')
     promt = postgreWork.get_promt_task(taskID)
-
+    # print(promt)
     for call in calls:
+        if call.is_first_message:
+            continue
         statusTask = postgreWork.get_status_task(taskID)
         if statusTask == 'stop':
             break
@@ -74,8 +99,9 @@ async def start_task(taskID: int):
         messagesList = [{"role": "user", "content": allMessages}]
         answerGPT = gpt.answer(system=promt, topic=messagesList)
         
-        await send_message(call.user_id, answerGPT, taskID)
-        time.sleep(random.randint(60, 90))
+        # time.sleep(random.randint(60, 90))
+        await send_message(call.user_id, answerGPT)
+        
         
     postgreWork.update_status_task(taskID, 'done')
     return {'detail': 'Task done'}
@@ -87,22 +113,31 @@ async def stop_task(taskID: int):
 
 @app.post('/first-contact/start/{taskID}')
 async def first_contact(taskID: int):
+    # 1/0
     calls = postgreWork.get_all_calls_for_task(taskID)
     taskStatus = postgreWork.get_status_task(taskID)
-    
+    print(taskStatus)
+    pprint(calls)
     if taskStatus == 'processing':
-        return 'Task is already in progress'
+        pass
+        # return 'Task is already in progress'
     
     postgreWork.update_status_task(taskID, 'processing')
     firstMessage = postgreWork.get_first_message_task(taskID)
-    
+    pprint(calls)
+    # groups = postgreWork.get_groups_for_task(taskID)
+    users=postgreWork.get_all_users_for_task(taskID)
     for call in calls:
         taskStatus = postgreWork.get_status_task(taskID)
         if taskStatus == 'stop':
             break
-        await send_message(call.user_id, firstMessage, taskID)
-        postgreWork.update_call_is_first_message(call.id, True)
-        time.sleep(random.randint(60, 90))
+        
+        mess= await send_message(chatID=call.user_id, message=firstMessage,threadID=users)
+        if mess is not None:
+            postgreWork.update_call_is_first_message(call.id, True)
+        else: continue
+
+        # time.sleep(random.randint(60, 90))
     
     postgreWork.update_status_task(taskID, 'done')
     return {'detail': 'First contact done'}
@@ -128,8 +163,29 @@ async def create_call(taskID: int):
 async def webhook():
     return {'detail': 'Webhook endpoint'}
 
+async def main():
+    global client
+    await client.start()
+    # user=PeerUser(400923372)
+    
+    # await client.send_message(entity=400923372, message='Hello!')
+    await first_contact(2)
+    # di=await client.get_dialogs()
+    # pprint(di)
+
+    # di= await client.get_participants('IGYAK')
+    # GetFullChatRequest = await client(GetFullChatRequest(-4252722092))
+    # pprint(GetFullChatRequest) 
+    # pprint(di) 
+
+    # from_ = await client.get_entity(6984701819)
+    # pprint(from_.__dict__)
+
+
+
 if __name__ == '__main__':
     # import asyncio
-    # asyncio.run(create_call(2))
-    import uvicorn
-    uvicorn.run(app, host='0.0.0.0', port=5002)
+    asyncio.run(main())
+    # first_contact(2)
+    # import uvicorn
+    # uvicorn.run(app, host='0.0.0.0', port=5002)

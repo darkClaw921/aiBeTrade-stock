@@ -369,7 +369,7 @@ def get_first_message_task(taskID:str)->str:
         task=session.query(Task).filter(Task.id==taskID).one()
         return task.first_message
 
-def get_all_users_for_task(taskID:str)->list[User]:
+def get_all_users_for_task(taskID:str)->list[Message]:
     with Session() as session:
         task=session.query(Task).filter(Task.id==taskID).one()
         pprint(task.__dict__)
@@ -403,6 +403,13 @@ def get_status_call(callID:str)->str:
         call=session.query(Calls).filter(Calls.id==callID).one()
         return call.status
 
+def get_groups_for_task(taskID:str)->list[Group]:
+    with Session() as session:
+        task=session.query(Task).filter(Task.id==taskID).one()
+        groups=task.groups
+        groups=session.query(Group).filter(Group.id.in_(groups)).all()
+        return groups
+    
 def get_all_calls_for_task(taskID:str)->list[Calls]:
     with Session() as session:
         calls=session.query(Calls).filter(Calls.group_id==taskID).all()
