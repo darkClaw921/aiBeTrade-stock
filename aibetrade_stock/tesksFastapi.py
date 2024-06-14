@@ -116,7 +116,7 @@ async def stop_first_contact(taskID: int):
 async def create_call(taskID: int):
     users = postgreWork.get_all_users_for_task(taskID)
     for user in users:
-        postgreWork.add_call(user_id=user.id, groupID=taskID)
+        postgreWork.add_call(userID=user.id, groupID=taskID)
     
     return {'detail': 'Calls created'}
 
