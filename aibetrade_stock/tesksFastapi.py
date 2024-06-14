@@ -7,7 +7,7 @@ import os
 from pprint import pprint
 import postgreWork
 from chat import GPT
-from workFlask import send_message
+# from workFlask import send_message
 import random
 import time
 
@@ -18,6 +18,39 @@ API_HASH = os.getenv('API_HASH')
 
 gpt = GPT()
 app = FastAPI()
+client = TelegramClient('session_name_i_own_zergo', API_ID, API_HASH, system_version="4.16.32-vxCUSTOM", device_model='FastAPI Galaxy S24 Ultra, running Android 14')
+client.start()
+
+def split_text(text, max_length):
+    """
+    Split the text into chunks of maximum length.
+    
+    Args:
+        text (str): The text to split.
+        max_length (int): The maximum length of each chunk.
+
+    Returns:
+        list: A list of chunks of the text.
+    """
+    chunks = []
+    start = 0
+    while start < len(text):
+        chunks.append(text[start:start + max_length])
+        start += max_length
+    return chunks
+
+def send_message(chatID, message, threadID=None):
+    # client.send_message(entity=chatID, message=message, message_thread_id=threadID)
+    # client.send_message(entity=-2118909508, message=message, message_thread_id=4294967329)
+# https://t.me/+tMRqqjOo2BplZGM6
+# https://t.me/+tMRqqjOo2BplZGM6
+# https://t.me/c/2118909508/33
+    # text = "Это очень большой текст, который нужно разбить на несколько частей, чтобы отправить его в Telegram."
+    max_length = 3000  # Максимальная длина сообщения в Telegram
+    chunks = split_text(text=message, max_length=max_length)
+    for chunk in chunks:
+        # client.send_message(entity=chatID, message=message)#work
+        client.send_message(entity=chatID, message=chunk)#work
 
 @app.post('/task/start/{taskID}')
 async def start_task(taskID: int):
@@ -25,7 +58,7 @@ async def start_task(taskID: int):
     statusTask = postgreWork.get_status_task(taskID)
     
     if statusTask == 'processing':
-        raise HTTPException(status_code=400, detail='Task is already in progress')
+        return 'Task is already in progress'
     
     postgreWork.update_status_task(taskID, 'processing')
     promt = postgreWork.get_promt_task(taskID)
@@ -58,7 +91,7 @@ async def first_contact(taskID: int):
     taskStatus = postgreWork.get_status_task(taskID)
     
     if taskStatus == 'processing':
-        raise HTTPException(status_code=400, detail='Task is already in progress')
+        return 'Task is already in progress'
     
     postgreWork.update_status_task(taskID, 'processing')
     firstMessage = postgreWork.get_first_message_task(taskID)
