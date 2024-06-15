@@ -266,13 +266,19 @@ async def delete_and_send_message(msg:Message, text='You have violated the rules
 
 def check_ref(msg:Message):
     """Проверка на реферальную ссылку true если его нету"""
-
-    if (msg.text.find('http') != -1 or msg.text.find('t.me/') != -1) and msg.text.find('aibetrade') != -1:
-        return True
+    text=msg.text
+    # Проверяем наличие http или t.me/
+    if 'http' in text or 't.me/' in text:
+        # Проверяем отсутствие aibetrade
+        if 'aibetrade' not in text:
+            return True
+        else:
+            return False
     return False
 
 def chek_http(msg):
-    if msg.text.find('http') != -1:
+    text=msg.text
+    if text in 'http':
         return True
     return False
 
@@ -301,21 +307,19 @@ async def message(msg: Message, state: FSMContext):
     
 
     #336464992 I OWN ZERGO
-    if userID in [327475194]: return 0
+    if userID in [327475194,336464992]: return 0
     
     
-    if chek_http(msg):
-        if check_ref(msg) == False: await delete_and_send_message(msg)
+    if check_ref(msg):
+        # if check_ref(msg) == False: await 
+        if thereadID==240 or thereadID==241:            
+            # print('попали')
+            await delete_and_send_message(msg)    
+            return 0
         else:
-            if thereadID==240 or thereadID==241:            
-                print('попали')
-                
-                return 0
-            else:
-                print('не попали')
-                await delete_and_send_message(msg, text='You have violated the rules of this group.  Referral links can be published in the "Referral links" threads')
-                return 0
-        return 0
+            # print('не попали')
+            await delete_and_send_message(msg, text='You have violated the rules of this group.  Referral links can be published in the "Referral links" threads')
+            return 0
     else:
         
         # print('попали')
@@ -329,5 +333,12 @@ async def message(msg: Message, state: FSMContext):
 
 
 if __name__ == '__main__':
-   
+    body={
+        "code": 'boost-1001609461642',
+        "userId": 327475194,
+        "action": True  
+    }
+    pprint(body)
+    request_AiBeTrade(body)
+
     pass
