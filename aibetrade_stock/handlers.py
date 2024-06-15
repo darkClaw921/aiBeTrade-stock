@@ -62,7 +62,7 @@ import requests
 import hashlib
 import base64
 import json
-
+import hmac
 # Define the secret key and other required information
 
 # task_code = "sub"
@@ -97,11 +97,15 @@ def request_AiBeTrade(body, webhook:str=WEBHOOK_URL):
 
     # Convert the body to a JSON string
     body_json = json.dumps(body)
-
+    total_params = body_json
+    print(total_params)
+    total_params = total_params.encode('utf-8')
+    secret_key = secret_key.encode('utf-8')
+    
     # Create the signature
-    signature = base64.b64encode(hashlib.sha256((body_json + secret_key).encode()).digest()).decode()
-
-
+    # signature = base64.b64encode(hashlib.sha256((body_json + secret_key).encode()).digest()).decode()
+    signature = hmac.new(secret_key, total_params, hashlib.sha256).hexdigest()
+    print(signature)
     # Define the headers
     headers = {
         "Content-Type": "application/json",
