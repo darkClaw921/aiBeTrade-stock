@@ -140,7 +140,8 @@ def add_new_user(userID:int, nickname:str, gropupID:int):
             id=userID,
             nickname=nickname,
             all_token=0,
-            all_token_price=0,         
+            all_token_price=0,     
+               
         )
         
         session.add(newUser)
@@ -219,7 +220,7 @@ def add_call(groupID:int=None, userID:int=None, text:str='', is_dialog:bool=Fals
         session.add(newCall)
         session.commit()
 
-def add_call_message(groupID:int, userID:int, messageID:int, text:str, status:str='new'):
+def add_call_message(groupID:int, userID:int, messageID:int, text:str, status:str='new',type_chat:str='user', ):
     with Session() as session:
         newCallMessage=CallMessage(
             created_date=datetime.now(),
@@ -227,7 +228,8 @@ def add_call_message(groupID:int, userID:int, messageID:int, text:str, status:st
             user_id=userID,
             message_id=messageID,
             text=text,
-            status=status
+            status=status,
+            type_chat='user' 
         )
         session.add(newCallMessage)
         session.commit()
@@ -294,11 +296,13 @@ def update_call_is_first_message(callID:str, is_first_message:bool):
         session.query(Calls).filter(Calls.id==callID)\
             .update({Calls.is_first_message:is_first_message}) 
         session.commit()
-def update_call_is_dialog(callID:str, is_dialog:bool):
+
+def update_call_is_dialog(userID:str, is_dialog:bool):
     with Session() as session:
-        session.query(Calls).filter(Calls.id==callID)\
+        session.query(Calls).filter(Calls.user_id==userID)\
             .update({Calls.is_dialog:is_dialog}) 
         session.commit()
+
 
 
 
@@ -415,6 +419,16 @@ def get_all_calls_for_task(taskID:str)->list[Calls]:
         calls=session.query(Calls).filter(Calls.group_id==taskID).all()
         return calls
 
+def get_call_user(userID:int)->Calls:
+    with Session() as session:
+        call=session.query(Calls).filter(Calls.user_id==userID).one()
+        return call
+
+def get_task(taskID:str)->Task:
+    with Session() as session:
+        task=session.query(Task).filter(Task.id==taskID).one()
+        return task
+
 
 
 def check_post(textPost:str)->bool:
@@ -436,6 +450,14 @@ def check_group(groupID:int)->bool:
     with Session() as session:
         groups=session.query(Group).filter(Group.id==groupID).all()
         if len(groups) > 0:
+            return True
+        else:
+            return False
+
+def check_user_in_call(userID:int)->bool:
+    with Session() as session:
+        calls=session.query(Calls).filter(Calls.user_id==userID).all()
+        if len(calls) > 0:
             return True
         else:
             return False
