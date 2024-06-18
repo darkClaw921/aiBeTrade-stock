@@ -194,7 +194,7 @@ async def removed_chat_boost_handler(chat_boost: types.ChatBoostRemoved) -> Any:
     pprint(chat_boost.chat.__dict__)
 
     # pprint(chat_boost.source.__dict__)
-    userID=chat_boost.boost.source.user.id
+    userID=chat_boost.source.user.id
     chatID=chat_boost.chat.id
     print(f"{chatID=}")
     print(f"{userID=}")
