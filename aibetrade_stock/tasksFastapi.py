@@ -142,7 +142,7 @@ async def first_contact(taskID: int):
             postgreWork.update_call_is_first_message(call.id, True)
         else: continue
 
-        time.sleep(random.randint(60, 90))
+        time.sleep(random.randint(15, 60))
     
     postgreWork.update_status_task(taskID, 'done')
     return {'detail': 'First contact done'}
