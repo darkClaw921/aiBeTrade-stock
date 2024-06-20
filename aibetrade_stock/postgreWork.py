@@ -224,7 +224,7 @@ def add_call_message(groupID:int, userID:int, messageID:int, text:str, status:st
     with Session() as session:
         newCallMessage=CallMessage(
             created_date=datetime.now(),
-            group_id=groupID,
+            group_id=2,
             user_id=userID,
             message_id=messageID,
             text=text,
