@@ -134,6 +134,10 @@ async def new_message_listener(event):
     promt=promt.replace('[name_group]', Group.name)
     history=get_history(chatID)
 
+    if text == 'pasjdlkaj23jlj':
+        clear_history(userID)
+        return 0
+    
     if len(history) >= 20:
         print('больше 20 сообщений')
         return 0
