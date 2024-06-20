@@ -229,7 +229,7 @@ def add_call_message(groupID:int, userID:int, messageID:int, text:str, status:st
             message_id=messageID,
             text=text,
             status=status,
-            type_chat='user' 
+            type_chat=type_chat 
         )
         session.add(newCallMessage)
         session.commit()
