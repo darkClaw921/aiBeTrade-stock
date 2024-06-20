@@ -15,6 +15,9 @@ from telethon.tl.functions.channels import GetFullChannelRequest
 import asyncio
 from helper import abt_serch
 from workRedis import clear_history, add_message_to_history, get_history
+# In workFlask.py
+# from telethon import TelegramClient
+# from telethon.sessions import SQLiteSession
 # Вставьте ваши данные для подключения к Telegram API
 # api_id = 'YOUR_API_ID'
 # api_hash = 'YOUR_API_HASH'
@@ -23,7 +26,7 @@ API_HASH = os.getenv('API_HASH')
 # phone_number = 'YOUR_PHONE_NUMBER'
 gpt=GPT()
 # Создайте экземпляр клиента Telegram
-client = TelegramClient(session='session_name_i_own_zergo', api_id=API_ID, api_hash=API_HASH, system_version="4.16.32-vxCUSTOM", device_model='FastAPI Galaxy S24 Ultra, running Android 14')
+client = TelegramClient(session='session_name_i_own_zergo2', api_id=API_ID, api_hash=API_HASH, system_version="4.16.32-vxCUSTOM", device_model='FastAPI Galaxy S24 Ultra, running Android 14', )
 
 
 # Авторизуйтесь в клиенте
