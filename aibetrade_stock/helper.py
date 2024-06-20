@@ -329,7 +329,7 @@ def abt_serch(command: str):
                 task = session.query(Task).filter(Task.id == task_id).first()
                 if task:
                     task.groups.append(int(channel_id))
-                    # session.commit()
+                    session.commit()
                     return f'Channel {channel_id} added to task {task_id} successfully.'
 
             case _ if re.match(view_channel_pattern, command):
@@ -343,7 +343,7 @@ def abt_serch(command: str):
                 task = session.query(Task).filter(Task.id == task_id).first()
                 if task:
                     task.groups = [int(channel_id)]
-                    # session.commit()
+                    session.commit()
                     return f'Channel {channel_id} for task {task_id} updated successfully.'
 
             case _ if re.match(delete_channel_pattern, command):

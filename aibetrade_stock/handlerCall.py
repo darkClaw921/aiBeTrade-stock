@@ -126,11 +126,13 @@ async def new_message_listener(event):
     
     #group_id=taskID
     Task=postgreWork.get_task(Call_User.group_id)
+    Group=postgreWork.get_group(Task.groups[0])
     promt=gpt.load_prompt(Task.promt_message)
-
+    promt=promt.replace('[name_group]', Group.name)
     history=get_history(chatID)
-    if len(history) > 20:
-        clear_history(userID)
+    if len(history) >= 20:
+        return 0
+        # clear_history(userID)
         
     add_message_to_history(userID, 'user', text)
 

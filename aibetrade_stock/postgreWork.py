@@ -429,6 +429,12 @@ def get_task(taskID:str)->Task:
         task=session.query(Task).filter(Task.id==taskID).one()
         return task
 
+def get_group(groupID:int)->Group:
+    with Session() as session:
+        group=session.query(Group).filter(Group.id==groupID).one()
+        return group
+
+
 
 
 def check_post(textPost:str)->bool:
