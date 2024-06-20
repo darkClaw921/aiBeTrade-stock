@@ -61,15 +61,18 @@ async def send_message(chatID, message, threadID=None):
         print(user.nickname) 
         try:
             await client.send_message(entity=chatID, message=chunk)#work
+            return 1
         except:
             await client.get_dialogs()    
             await client.get_participants(user.nickname)
+
             # pprint(user.nickname)
                     # await client.get_participants(thread.name)
                 # await client.get_participants(threadID)
         try:
             # print(user.nickname) 
             await client.send_message(entity=chatID, message=chunk)#wor
+            return 1
         except:
             return None
 
@@ -116,33 +119,48 @@ async def first_contact(taskID: int):
     # 1/0
     calls = postgreWork.get_all_calls_for_task(taskID)
     taskStatus = postgreWork.get_status_task(taskID)
-    print(taskStatus)
-    pprint(calls)
+    # print(taskStatus)
+    # pprint(calls)
     if taskStatus == 'processing':
         pass
         # return 'Task is already in progress'
     
     postgreWork.update_status_task(taskID, 'processing')
+    
+    # promtFurstMessage=gpt.load_prompt('')
+    
     firstMessage = postgreWork.get_first_message_task(taskID)
-    promtFurstMessage=gpt.load_prompt('')
-    historyList = [
-        {'role': 'user', 'content': firstMessage},]
-    firstMessage=gpt.answer_yandex(promtFurstMessage, historyList, 0)[0]
-
-    pprint(calls)
+    # pprint(calls)
     # groups = postgreWork.get_groups_for_task(taskID)
     users=postgreWork.get_all_users_for_task(taskID)
+    Task=postgreWork.get_task(taskID)
+    groupID=Task.groups[0]
+    promtFirstMessage = gpt.load_prompt(Task.first_message) # это url теперь
     for call in calls:
+        
         taskStatus = postgreWork.get_status_task(taskID)
         if taskStatus == 'stop':
             break
         
+        messageUser=postgreWork.get_last_messages_for_user(userID=call.user_id,groupID=groupID, count=2)
+        mesUser=''
+        for message in messageUser:
+            mesUser+=message.text+'\n'
+
+        historyList = [
+            {'role': 'user', 'content': mesUser},]
+        print(f'{call.user_id=}')
+        print(f'{mesUser=}')
+        # continue
+        firstMessage=gpt.answer(promtFirstMessage, historyList, 0, modelVersion='gpt-3.5-turbo-16k')[0]
+
         mess= await send_message(chatID=call.user_id, message=firstMessage,threadID=users)
+        print(f'{"отправлено":_^30}')
         if mess is not None:
             postgreWork.update_call_is_first_message(call.id, True)
         else: continue
 
-        time.sleep(random.randint(15, 60))
+        # time.sleep(random.randint(15, 60))
     
     postgreWork.update_status_task(taskID, 'done')
     return {'detail': 'First contact done'}
@@ -152,7 +170,7 @@ async def stop_first_contact(taskID: int):
     postgreWork.update_status_task(taskID, 'stop')
     return {'detail': 'First contact stopped'}
 
-@app.post('/create-call/{taskID}')
+@app.post('/-call/{taskID}')
 async def create_call(taskID: int):
     users = postgreWork.get_all_users_for_task(taskID)
     for message in users:
@@ -170,14 +188,18 @@ async def webhook():
 
 async def main():
     global client
-    await client.start()
+    # await client.start()
     # user=PeerUser(400923372)
-    import uvicorn
-    uvicorn.run(app, host='0.0.0.0', port=5002) 
+    # import uvicorn
+    # uvicorn.run(app, host='0.0.0.0', port=5002) 
     # await client.send_message(entity=400923372, message='Hello!')
     # await first_contact(2)
     # di=await client.get_dialogs()
     # pprint(di)
+
+
+    # await create_call(2)
+    await first_contact(2)
 
     # di= await client.get_participants('IGYAK')
     # GetFullChatRequest = await client(GetFullChatRequest(-4252722092))

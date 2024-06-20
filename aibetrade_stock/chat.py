@@ -308,7 +308,7 @@ class GPT():
       #{"role": "user", "content": context}
       ]
     messages.extend(topic)
-    pprint(messages)
+    # pprint(messages)
     completion = client.chat.completions.create(model=modelVersion,
     # completion = client.chat.completions.create(model='gpt-4-turbo-preview',
         messages=messages,

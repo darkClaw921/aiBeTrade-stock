@@ -133,10 +133,12 @@ async def new_message_listener(event):
     promt=gpt.load_prompt(Task.promt_message)
     promt=promt.replace('[name_group]', Group.name)
     history=get_history(chatID)
+
     if len(history) >= 20:
+        print('больше 20 сообщений')
         return 0
         # clear_history(userID)
-        
+    print('меньше 20 ссобщений')    
     add_message_to_history(userID, 'user', text)
 
     history = get_history(userID) 
@@ -148,8 +150,9 @@ async def new_message_listener(event):
     # answer, allToken, allPrice = gpt.answer('',messagesList,1)
     # await event.reply(answer)  
     # else:
-    answer, allToken, allPrice = gpt.answer(promt,history,1)
     await client.get_dialogs()
+    answer, allToken, allPrice = gpt.answer(promt,history,1)
+
     await client.send_message(userID, message=answer)
         
     postgreWork.add_call_message(Call_User.group_id, userID, message_id, answer, typeChat,type_chat='system', )

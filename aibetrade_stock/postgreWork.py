@@ -392,9 +392,10 @@ def get_all_users_for_task(taskID:str)->list[Message]:
             # users.append()
         return users
 
-def get_last_messages_for_user(userID:int, count:int=10)->list[Message]:
+def get_last_messages_for_user(userID:int, groupID:int, count:int=10)->list[Message]:
     with Session() as session:
-        messages=session.query(Message).filter(Message.user_id==userID).order_by(Message.created_date.desc()).limit(count).all()
+        # messages=session.query(Message).filter(Message.user_id==userID).order_by(Message.created_date.desc()).limit(count).all()
+        messages=session.query(Message).filter(Message.user_id==userID, Message.group_id==groupID).order_by(Message.created_date.desc()).limit(count).all()
         return messages
 
 def get_status_task(taskID:str)->str:
