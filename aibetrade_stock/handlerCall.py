@@ -126,7 +126,7 @@ async def new_message_listener(event):
     
     #group_id=taskID
     Task=postgreWork.get_task(Call_User.group_id)
-    promt=gpt.load_prompt(Task.url)
+    promt=gpt.load_prompt(Task.promt_message)
 
     history=get_history(chatID)
     if len(history) > 4:
