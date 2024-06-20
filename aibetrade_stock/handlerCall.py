@@ -129,7 +129,7 @@ async def new_message_listener(event):
     promt=gpt.load_prompt(Task.url)
 
     history=get_history(chatID)
-    if len(history) > 10:
+    if len(history) > 4:
         clear_history(userID)
         
     add_message_to_history(userID, 'user', text)
