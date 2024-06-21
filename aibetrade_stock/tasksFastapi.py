@@ -64,7 +64,10 @@ async def send_message(chatID, message, threadID=None):
             return 1
         except:
             await client.get_dialogs()    
+        try:
             await client.get_participants(user.nickname)
+        except:
+            1+0
 
             # pprint(user.nickname)
                     # await client.get_participants(thread.name)
@@ -137,7 +140,8 @@ async def first_contact(taskID: int):
     groupID=Task.groups[0]
     promtFirstMessage = gpt.load_prompt(Task.first_message) # это url теперь
     for call in calls:
-        
+        if call.is_first_message:
+            continue
         taskStatus = postgreWork.get_status_task(taskID)
         if taskStatus == 'stop':
             break
@@ -188,7 +192,7 @@ async def webhook():
 
 async def main():
     global client
-    # await client.start()
+    await client.start()
     # user=PeerUser(400923372)
     # import uvicorn
     # uvicorn.run(app, host='0.0.0.0', port=5002) 
