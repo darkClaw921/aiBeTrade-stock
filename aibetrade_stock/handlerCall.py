@@ -156,7 +156,7 @@ async def new_message_listener(event):
     # else:
     await client.get_dialogs()
     answer, allToken, allPrice = gpt.answer(promt,history,1)
-
+    time.sleep(random.randint(1, 5))
     await client.send_message(userID, message=answer)
         
     postgreWork.add_call_message(Call_User.group_id, userID, message_id, answer, typeChat,type_chat='system', )

@@ -160,7 +160,7 @@ async def first_contact(taskID: int):
             postgreWork.update_call_is_first_message(call.id, True)
         else: continue
 
-        # time.sleep(random.randint(15, 60))
+        time.sleep(random.randint(15, 60))
     
     postgreWork.update_status_task(taskID, 'done')
     return {'detail': 'First contact done'}
@@ -175,7 +175,7 @@ async def create_call(taskID: int):
     users = postgreWork.get_all_users_for_task(taskID)
     for message in users:
         try:
-            pprint(message.__dict__)
+            # pprint(message.__dict__)
             postgreWork.add_call(userID=message.user_id, groupID=taskID)
         except:
             continue
