@@ -296,7 +296,8 @@ async def message(msg: Message, state: FSMContext):
     # 241 реф ссылки #240
     userID = msg.from_user.id
     # print(msg.chat.id)
-    # print(f"{msg.chat.id=}")
+    print(f"{msg.chat.id=}")
+    print(f'{userID=}')
     
     
     if msg.chat.id != -1002118909508:
@@ -311,10 +312,14 @@ async def message(msg: Message, state: FSMContext):
     
 
     #336464992 I OWN ZERGO
-    if userID in [327475194,336464992, None]: return 0
+    if userID in [327475194,336464992, 1087968824]: return 0
     
     
     if check_ref(msg):
+        print(f"{'попали в чек':_^34}")
+        print(f"{msg.chat.id=}")
+        print(f'{userID=}')
+
         # if check_ref(msg) == False: await 
         if thereadID==240 or thereadID==241:            
             # print('попали')

@@ -19,7 +19,7 @@ API_HASH = os.getenv('API_HASH')
 
 gpt = GPT()
 app = FastAPI()
-client = TelegramClient('session_name_i_own_zergo', API_ID, API_HASH, system_version="4.16.32-vxCUSTOM", device_model='FastAPI Galaxy S24 Ultra, running Android 14')
+client = TelegramClient('session_name_i_own_zergo3', API_ID, API_HASH, system_version="4.16.32-vxCUSTOM", device_model='FastAPI Galaxy S24 Ultra, running Android 14')
 
 def split_text(text, max_length):
     """
