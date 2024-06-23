@@ -63,6 +63,9 @@ import hashlib
 import base64
 import json
 import hmac
+# import loguru
+from loguru import logger
+logger.add("file_{time}.log",format="{time} - {level} - {message}", rotation="100 MB", retention="10 days", level="DEBUG")
 # Define the secret key and other required information
 
 # task_code = "sub"
@@ -98,14 +101,14 @@ def request_AiBeTrade(body, webhook:str=WEBHOOK_URL):
     # Convert the body to a JSON string
     body_json = json.dumps(body)
     total_params = body_json
-    print(total_params)
+    # print(total_params)
     total_params = total_params.encode('utf-8')
     secret_key = secret_key.encode('utf-8')
     
     # Create the signature
     # signature = base64.b64encode(hashlib.sha256((body_json + secret_key).encode()).digest()).decode()
     signature = hmac.new(secret_key, total_params, hashlib.sha256).hexdigest()
-    print(signature)
+    # print(signature)
     # Define the headers
     headers = {
         "Content-Type": "application/json",
@@ -114,11 +117,18 @@ def request_AiBeTrade(body, webhook:str=WEBHOOK_URL):
 
     # Define the URL
     url=WEBHOOK_URL
-    pprint(headers)
-    pprint(body_json)
+    # pprint(headers)
+    # pprint(body_json)
     # Make the POST request
+
+    logger.debug(f'{url=}\n')
+    logger.debug(f'{headers=}\n')
+    logger.debug(f'{body_json=}\n')
     response = requests.post(url, headers=headers, data=body_json)  
-    pprint(response.text)  
+    logger.debug(f'{response.text=}\n')
+    # pprint(response.text)  
+
+
 
 @router.message(Command("help"))
 async def help_handler(msg: Message, state: FSMContext):
