@@ -390,7 +390,7 @@ def abt_serch(command: str):
                 if task:
                     task.status = 'Calling'
                     session.commit()
-                    requests.post(f'http://localhost:5002/first-contact/start/{task_id}',timeout=1)
+                    requests.post(f'http://159.223.5.4:5002/first-contact/start/{task_id}',timeout=1)
                     # Отправка сообщения в телеграм о статусе
                     return f'Status: Calling completed  ID Task: {task_id}'
             case _ if re.match(create_call_pattern, command):
@@ -399,7 +399,7 @@ def abt_serch(command: str):
                 if task:
                     # task.status = 'Calling'
                     #создать звоноки
-                    requests.post(f'http://localhost:5002/call/{task_id}',timeout=1)
+                    requests.post(f'http://159.223.5.4:5002/call/{task_id}',timeout=1)
                     # session.commit()
                     # Отправка сообщения в телеграм о статусе
                     return f'Status: Calling completed  ID Task: {task_id}'
