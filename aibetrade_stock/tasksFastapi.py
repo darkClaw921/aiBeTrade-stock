@@ -194,8 +194,7 @@ async def main():
     global client
     await client.start()
     # user=PeerUser(400923372)
-    import uvicorn
-    uvicorn.run(app, host='0.0.0.0', port=5002) 
+    
     # await client.send_message(entity=400923372, message='Hello!')
     # await first_contact(2)
     # di=await client.get_dialogs()
@@ -217,6 +216,8 @@ async def main():
 
 if __name__ == '__main__':
     # import asyncio
-    asyncio.run(main())
+    import uvicorn
+    uvicorn.run(app, host='0.0.0.0', port=5002) 
+    # asyncio.run(main())
     # first_contact(2)
     
