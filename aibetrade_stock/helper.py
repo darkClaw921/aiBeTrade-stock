@@ -284,6 +284,7 @@ def abt_serch(command: str):
     status_task_pattern = r'status_task id=(\d+)'
     count_search_pattern = r'count_search id_task=(\d+)'
     start_call_pattern = r'start_call id_task=(\d+)'
+    create_call_pattern =r'create_call id_task=(\d+)'
     # session = Session()
     with Session() as session:
         match command:
@@ -359,7 +360,7 @@ def abt_serch(command: str):
                 task = session.query(Task).filter(Task.id == task_id).first()
                 if task:
                     task.status = 'Search'
-                    # session.commit()
+                    session.commit()
                     # Отправка сообщения в телеграм о статусе
                     return f'Status: Search completed  ID Task: {task_id}'
 
@@ -368,7 +369,7 @@ def abt_serch(command: str):
                 task = session.query(Task).filter(Task.id == task_id).first()
                 if task:
                     task.status = 'Stop'
-                    # session.commit()
+                    session.commit()
                     # Отправка сообщения в телеграм о статусе
                     return f'Status: Stop completed  ID Task: {task_id}'
 
@@ -382,12 +383,23 @@ def abt_serch(command: str):
                 task_id = re.findall(count_search_pattern, command)[0]
                 count = session.query(Calls).filter(Calls.task_id == task_id).distinct(Calls.user_id).count()
                 return f'Unique users for task {task_id}: {count}'
-
+            
             case _ if re.match(start_call_pattern, command):
                 task_id = re.findall(start_call_pattern, command)[0]
                 task = session.query(Task).filter(Task.id == task_id).first()
                 if task:
                     task.status = 'Calling'
+                    session.commit()
+                    requests.post(f'http://localhost:5002/first-contact/start/{task_id}',timeout=1)
+                    # Отправка сообщения в телеграм о статусе
+                    return f'Status: Calling completed  ID Task: {task_id}'
+            case _ if re.match(create_call_pattern, command):
+                task_id = re.findall(create_call_pattern, command)[0]
+                task = session.query(Task).filter(Task.id == task_id).first()
+                if task:
+                    # task.status = 'Calling'
+                    #создать звоноки
+                    requests.post(f'http://localhost:5002/call/{task_id}',timeout=1)
                     # session.commit()
                     # Отправка сообщения в телеграм о статусе
                     return f'Status: Calling completed  ID Task: {task_id}'

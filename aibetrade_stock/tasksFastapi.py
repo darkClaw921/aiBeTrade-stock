@@ -174,7 +174,7 @@ async def stop_first_contact(taskID: int):
     postgreWork.update_status_task(taskID, 'stop')
     return {'detail': 'First contact stopped'}
 
-@app.post('/-call/{taskID}')
+@app.post('/call/{taskID}')
 async def create_call(taskID: int):
     users = postgreWork.get_all_users_for_task(taskID)
     for message in users:
@@ -194,8 +194,8 @@ async def main():
     global client
     await client.start()
     # user=PeerUser(400923372)
-    # import uvicorn
-    # uvicorn.run(app, host='0.0.0.0', port=5002) 
+    import uvicorn
+    uvicorn.run(app, host='0.0.0.0', port=5002) 
     # await client.send_message(entity=400923372, message='Hello!')
     # await first_contact(2)
     # di=await client.get_dialogs()
@@ -203,7 +203,7 @@ async def main():
 
 
     # await create_call(2)
-    await first_contact(2)
+    # await first_contact(2)
 
     # di= await client.get_participants('IGYAK')
     # GetFullChatRequest = await client(GetFullChatRequest(-4252722092))
