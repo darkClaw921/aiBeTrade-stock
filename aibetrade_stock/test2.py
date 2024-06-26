@@ -50,7 +50,7 @@ async def message_me(text:str, userID):
     if userID not in admins:
         return None
     
-    comand=abt_serch(text)
+    comand= await abt_serch(text)
     print(f'{comand=}')
     # if userID != 327475194 or userID != 6984701819:
     

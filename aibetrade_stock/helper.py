@@ -14,6 +14,7 @@ from workBinance import get_BTC_analit_for, get_price_now
 import random 
 from workFlask import send_message
 from postgreWork import *
+import aiohttp
 load_dotenv()
 # sql = workYDB.Ydb()
 
@@ -269,7 +270,7 @@ def forecastText(day:int, coin='Bitcoin'):
         # logger.debug(f'{e=}')
 
 import re
-def abt_serch(command: str):
+async def abt_serch(command: str):
     # Регулярные выражения для команд
     start_new_task_pattern = r'start_new_task name="(.+?)" link_promt="(.+?)" message="(.+?)"'
     view_task_pattern = r'view_task'
@@ -390,7 +391,8 @@ def abt_serch(command: str):
                 if task:
                     task.status = 'Calling'
                     session.commit()
-                    requests.post(f'http://159.223.5.4:5002/first-contact/start/{task_id}',timeout=1)
+                    await aiohttp.request('POST', f'http://159.223.5.4:5002/first-contact/start/{task_id}')
+                    # requests.post(f'http://159.223.5.4:5002/first-contact/start/{task_id}',timeout=1)
                     # Отправка сообщения в телеграм о статусе
                     return f'Status: Calling completed  ID Task: {task_id}'
             case _ if re.match(create_call_pattern, command):
@@ -399,7 +401,8 @@ def abt_serch(command: str):
                 if task:
                     # task.status = 'Calling'
                     #создать звоноки
-                    requests.post(f'http://159.223.5.4:5002/call/{task_id}',timeout=1)
+                    await aiohttp.request('POST', f'http://159.223.5.4:5002/call/{task_id}')
+                    # requests.post(f'http://159.223.5.4:5002/call/{task_id}',timeout=1)
                     # session.commit()
                     # Отправка сообщения в телеграм о статусе
                     return f'Status: Calling completed  ID Task: {task_id}'
