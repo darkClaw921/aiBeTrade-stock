@@ -270,7 +270,7 @@ def forecastText(day:int, coin='Bitcoin'):
         # logger.debug(f'{e=}')
 
 import re
-async def abt_serch(command: str):
+def abt_serch(command: str):
     # Регулярные выражения для команд
     start_new_task_pattern = r'start_new_task name="(.+?)" link_promt="(.+?)" message="(.+?)"'
     view_task_pattern = r'view_task'
@@ -391,21 +391,22 @@ async def abt_serch(command: str):
                 if task:
                     task.status = 'Calling'
                     session.commit()
-                    await aiohttp.request('POST', f'http://159.223.5.4:5002/first-contact/start/{task_id}')
-                    # requests.post(f'http://159.223.5.4:5002/first-contact/start/{task_id}',timeout=1)
+                    # a = await aiohttp.request('POST', f'http://159.223.5.4:5002/first-contact/start/{task_id}')
+                    requests.post(f'http://159.223.5.4:5002/first-contact/start/{task_id}',timeout=1)
                     # Отправка сообщения в телеграм о статусе
                     return f'Status: Calling completed  ID Task: {task_id}'
+            
             case _ if re.match(create_call_pattern, command):
                 task_id = re.findall(create_call_pattern, command)[0]
                 task = session.query(Task).filter(Task.id == task_id).first()
                 if task:
                     # task.status = 'Calling'
                     #создать звоноки
-                    await aiohttp.request('POST', f'http://159.223.5.4:5002/call/{task_id}')
-                    # requests.post(f'http://159.223.5.4:5002/call/{task_id}',timeout=1)
+                    # await aiohttp.request('POST', f'http://159.223.5.4:5002/call/{task_id}')
+                    requests.post(f'http://159.223.5.4:5002/call/{task_id}',timeout=1)
                     # session.commit()
                     # Отправка сообщения в телеграм о статусе
-                    return f'Status: Calling completed  ID Task: {task_id}'
+                    return f'Status: Calling create completed  ID Task: {task_id}'
 
             case _:
                 return 'Invalid command.'

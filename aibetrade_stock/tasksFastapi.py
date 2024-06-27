@@ -159,6 +159,7 @@ async def first_contact(taskID: int):
         firstMessage=gpt.answer(promtFirstMessage, historyList, 0, modelVersion='gpt-3.5-turbo-16k')[0]
         postgreWork.add_call_message(groupID, call.user_id, firstMessage, 'first_system')
         mess= await send_message(chatID=call.user_id, message=firstMessage,threadID=users)
+        
         print(f'{"отправлено":_^30}')
         if mess is not None:
             postgreWork.update_call_is_first_message(call.id, True)
