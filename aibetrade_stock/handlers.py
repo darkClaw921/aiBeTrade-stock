@@ -310,7 +310,9 @@ async def message(msg: Message, state: FSMContext):
     print(f'{userID=}')
     
     
-    if msg.chat.id != -1002118909508:
+    # if msg.chat.id != -1002118909508:
+    #     return 0
+    if msg.chat.id not in [-1002118909508,-1002242862285,-1002231035352,-1002163616957]:
         return 0
     
     thereadID=msg.message_thread_id
@@ -337,7 +339,10 @@ async def message(msg: Message, state: FSMContext):
             return 0
         else:
             # print('не попали')
-            await delete_and_send_message(msg, text='You have violated the rules of this group.  Referral links can be published in the "Referral links" threads')
+            if msg.chat.id == -1002118909508:
+                await delete_and_send_message(msg, text='You have violated the rules of this group.  Referral links can be published in the "Referral links" threads')
+            else:
+                await delete_and_send_message(msg)
             return 0
     else:
         
